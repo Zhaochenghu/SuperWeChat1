@@ -2,7 +2,9 @@ package cn.ucai.superwechat;
 
 public interface I {
 
-	 interface User {
+
+
+	interface User {
 		String TABLE_NAME							=		"t_superwechat_user";
 		String USER_NAME 							= 		"m_user_name";					//用户账号
 		String PASSWORD 							= 		"m_user_password";				//用户密码
@@ -66,7 +68,7 @@ public interface I {
 	String PAGE_ID 									= 		"page_id";						//分页的起始下标
 	String PAGE_SIZE 								= 		"page_size";					//分页的每页数量
 	int DEFAULT_DISTANCE                            =       100;                           //查找附近的人时，默认距离为100KM
-	/*int ID_DEFAULT									=		0;								//ID默认值
+	int ID_DEFAULT									=		0;								//ID默认值
 	int UN_READ_MSG_COUNT_DEFAULT					=		0;								//未读消息数量默认值
 	int GROUP_MAX_USERS_DEFAULT 					= 		-1;								//群组最大人数默认值
 	int GROUP_AFFILIATIONS_COUNT_DEFAULT 			= 		1;								//群组人数默认值
@@ -81,6 +83,7 @@ public interface I {
 	String AVATAR_TYPE_GROUP_PATH 					=		"group_icon";					//群组头像保存目录
 	String AVATAR_SUFFIX_PNG						=		".png";							//PNG图片后缀名
 	String AVATAR_SUFFIX_JPG						=		".jpg";							//JPG图片后缀名
+	String QUESTION                                 =       "?";
 	int LOCATION_IS_SEARCH_ALLOW					=		1;								//可以被搜索到地理位置
 	int LOCATION_IS_SEARCH_INHIBIT					=		0;								//禁止被搜索到地理位置
 	int MSG_SUCCESS						            =  		0;							    //默认成功
@@ -121,8 +124,7 @@ public interface I {
 	int MSG_PUBLIC_GROUP_FAIL						=		415;							//查找公开群失败
 	int MSG_LOCATION_GET_FAIL						=		501;							//获取附近的人失败
 	int MSG_UNKNOW									=		999;							//未知错误
-	int MSG_ILLEGAL_REQUEST							=		-1;							    //非法请求*/
-	String AVATAR_TYPE_USER_PATH                    =       "user_avatar";
+	int MSG_ILLEGAL_REQUEST							=		-1;							    //非法请求
 	/**用户头像*/
 	String KEY_REQUEST 								= 		"request";
 	/** 上传图片的类型：user_avatar或group_icon */
