@@ -110,13 +110,13 @@ public class RegisterActivity extends BaseActivity {
 			Toast.makeText(this, getResources().getString(R.string.User_name_cannot_be_empty), Toast.LENGTH_SHORT).show();
 			userNameEditText.requestFocus();
 			return;
-		} else if (TextUtils.isEmpty(nick)) {
-			Toast.makeText(this, getResources().getString(R.string.toast_nick_not_isnull), Toast.LENGTH_SHORT).show();
-			userNickEditText.requestFocus();
-			return;
 		}else if (!username.matches("[\\w][\\w\\d_]+")) {
 			Toast.makeText(this, getResources().getString(R.string.illegal_user_name), Toast.LENGTH_SHORT).show();
 			userNameEditText.requestFocus();
+			return;
+		} else if (TextUtils.isEmpty(nick)) {
+			Toast.makeText(this, getResources().getString(R.string.toast_nick_not_isnull), Toast.LENGTH_SHORT).show();
+			userNickEditText.requestFocus();
 			return;
 		}else if (TextUtils.isEmpty(pwd)) {
 			Toast.makeText(this, getResources().getString(R.string.Password_cannot_be_empty), Toast.LENGTH_SHORT).show();

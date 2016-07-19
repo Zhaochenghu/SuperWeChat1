@@ -58,13 +58,15 @@ public interface I {
 		String UPDATE_TIME 							= 		"m_location_last_update_time";	//最后更新时间
 	}
 
+	String SERVER_ROOT                              =       "http://192.168.1.92:8888/SuperWeChatServer/Server";
+
 //	String AVATAR_PATH 								= 		"E:/test/";
 	String ISON8859_1 								= 		"iso8859-1";
 	String UTF_8 									= 		"utf-8";
 	String PAGE_ID 									= 		"page_id";						//分页的起始下标
 	String PAGE_SIZE 								= 		"page_size";					//分页的每页数量
-	int DEFAULT_DISTANCE = 100; // 查找附近的人时，默认距离为100KM
-	int ID_DEFAULT									=		0;								//ID默认值
+	int DEFAULT_DISTANCE                            =       100;                           //查找附近的人时，默认距离为100KM
+	/*int ID_DEFAULT									=		0;								//ID默认值
 	int UN_READ_MSG_COUNT_DEFAULT					=		0;								//未读消息数量默认值
 	int GROUP_MAX_USERS_DEFAULT 					= 		-1;								//群组最大人数默认值
 	int GROUP_AFFILIATIONS_COUNT_DEFAULT 			= 		1;								//群组人数默认值
@@ -85,7 +87,7 @@ public interface I {
 	int MSG_REGISTER_USERNAME_EXISTS				=		101;							//账号已经存在
 	int MSG_REGISTER_FAIL							=		102;							//注册失败
 	int MSG_UNREGISTER_FAIL							=		103;							//解除注册失败
-	int MSG_USER_SEARCH_FAIL		    			=		104;							// 查找用户失败
+	int MSG_USER_SEARCH_FAIL		    			=		104;							//查找用户失败
 	int MSG_LOGIN_UNKNOW_USER						=		105;							//账户不存在
 	int MSG_LOGIN_ERROR_PASSWORD					=		106;							//账户密码错误
 	int MSG_LOGIN_SUCCESS							=		107;							//登陆成功
@@ -100,8 +102,8 @@ public interface I {
 	int MSG_CONTACT_FIRENDED						=		301;							//已经是好友关系
 	int MSG_CONTACT_ADD_FAIL						=		302;							//好友关系添加失败
 	int MSG_CONTACT_DEL_FAIL						=		303;							//好友关系删除失败
-	int MSG_GET_CONTACT_ALL_FAIL					=		304;							// 获取全部好友列表失败
-	int MSG_GET_CONTACT_PAGES_FAIL					=		305;							// 分页获取好友列表失败
+	int MSG_GET_CONTACT_ALL_FAIL					=		304;							//获取全部好友列表失败
+	int MSG_GET_CONTACT_PAGES_FAIL					=		305;							//分页获取好友列表失败
 	int MSG_GROUP_HXID_EXISTS						=		401;							//群组环信ID已经存在
 	int MSG_GROUP_CREATE_FAIL						=		402;							//创建群组失败
 	int MSG_GROUP_ADD_MEMBER_FAIL					=		403;							//添加群组成员失败
@@ -117,10 +119,11 @@ public interface I {
 	int MSG_GROUP_FIND_BY_USER_NAME_FAIL			=		413;							//查找用户名称查找查找群组失败
 	int MSG_GROUP_FIND_BY_GROUP_NAME_FAIL			=		414;							//查找群组名称查找查找群组失败
 	int MSG_PUBLIC_GROUP_FAIL						=		415;							//查找公开群失败
-	int MSG_LOCATION_GET_FAIL						=		501;							// 获取附近的人失败
+	int MSG_LOCATION_GET_FAIL						=		501;							//获取附近的人失败
 	int MSG_UNKNOW									=		999;							//未知错误
-	int MSG_ILLEGAL_REQUEST							=		-1;							//非法请求
-
+	int MSG_ILLEGAL_REQUEST							=		-1;							    //非法请求*/
+	String AVATAR_TYPE_USER_PATH                    =       "user_avatar";
+	/**用户头像*/
 	String KEY_REQUEST 								= 		"request";
 	/** 上传图片的类型：user_avatar或group_icon */
 	String AVATAR_TYPE 								= 		"avatarType";
