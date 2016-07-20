@@ -90,7 +90,7 @@ public class RegisterActivity extends BaseActivity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		if (requestCode != RESULT_OK) {
+		if (resultCode != RESULT_OK) {
 			return;
 		}
 		mOnSetAvatarListener.setAvatar(requestCode,data,imAvatar);
@@ -110,8 +110,8 @@ public class RegisterActivity extends BaseActivity {
 	 *
 	 */
 	public void register() {
-		nick = userNickEditText.getText().toString().trim();
 		username = userNameEditText.getText().toString().trim();
+		nick = userNickEditText.getText().toString().trim();
 		pwd = passwordEditText.getText().toString().trim();
 		String confirm_pwd = confirmPwdEditText.getText().toString().trim();
 		if (TextUtils.isEmpty(username)) {
@@ -165,6 +165,7 @@ public class RegisterActivity extends BaseActivity {
 					public void onSuccess(Result result) {
 						Log.e(TAG, "register fail..." + result.getRetCode());
 						pd.dismiss();
+						registerEMServer();
 						Toast.makeText(getApplicationContext(), getResources().getString(R.string.Registration_failed), Toast.LENGTH_SHORT).show();
 					}
 
