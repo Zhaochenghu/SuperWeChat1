@@ -42,10 +42,13 @@ import cn.ucai.superwechat.SuperWeChatApplication;
 import cn.ucai.superwechat.DemoHXSDKHelper;
 import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.bean.Result;
+import cn.ucai.superwechat.bean.UserAvatar;
 import cn.ucai.superwechat.data.OkHttpUtils2;
+import cn.ucai.superwechat.db.DemoDBManager;
 import cn.ucai.superwechat.db.UserDao;
 import cn.ucai.superwechat.domain.User;
 import cn.ucai.superwechat.utils.CommonUtils;
+import cn.ucai.superwechat.utils.Utils;
 
 /**
  * 登陆页面
@@ -182,10 +185,14 @@ public class LoginActivity extends BaseActivity {
 					@Override
 					public void onSuccess(Result result) {
 						if (result != null && result.isRetMsg()) {
+							UserAvatar user = (UserAvatar) result.getRetData();
+							saveUserToDB(user);
 							loginSuccess();
 						} else {
 							pd.dismiss();
-							Toast.makeText(getApplicationContext(), R.string.Login_failed+result.getRetCode(), Toast.LENGTH_LONG).show();
+							Toast.makeText(getApplicationContext(),R.string.Login_failed
+									+ Utils.getResourceString(LoginActivity.this,result.getRetCode()),
+									Toast.LENGTH_LONG).show();
 						}
 					}
 
@@ -196,6 +203,13 @@ public class LoginActivity extends BaseActivity {
 						Toast.makeText(getApplicationContext(), R.string.Login_failed, Toast.LENGTH_LONG).show();
 					}
 				});
+	}
+
+	private void saveUserToDB(UserAvatar user) {
+		if (user != null) {
+			UserDao dao = new UserDao(LoginActivity.this);
+			dao.saveUderAvatar(user);
+		}
 	}
 
 	private void loginSuccess() {
