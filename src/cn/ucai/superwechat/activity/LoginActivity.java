@@ -207,6 +207,7 @@ public class LoginActivity extends BaseActivity {
 
 	private void saveUserToDB(UserAvatar user) {
 		if (user != null) {
+			//存入db
 			UserDao dao = new UserDao(LoginActivity.this);
 			dao.saveUderAvatar(user);
 		}

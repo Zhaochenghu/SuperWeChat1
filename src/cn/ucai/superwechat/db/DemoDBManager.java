@@ -12,6 +12,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 
 import cn.ucai.superwechat.Constant;
+import cn.ucai.superwechat.bean.UserAvatar;
 import cn.ucai.superwechat.domain.InviteMessage;
 import cn.ucai.superwechat.domain.RobotUser;
 import cn.ucai.superwechat.domain.User;
@@ -312,7 +313,7 @@ public class DemoDBManager {
 			Cursor cursor = db.rawQuery("select * from " + UserDao.ROBOT_TABLE_NAME, null);
 			if(cursor.getCount()>0){
 				users = new HashMap<String, RobotUser>();
-			};
+			}
 			while (cursor.moveToNext()) {
 				String username = cursor.getString(cursor.getColumnIndex(UserDao.ROBOT_COLUMN_NAME_ID));
 				String nick = cursor.getString(cursor.getColumnIndex(UserDao.ROBOT_COLUMN_NAME_NICK));
@@ -344,7 +345,22 @@ public class DemoDBManager {
 		}
 		return users;
 	}
-    
-    
-    
+    /**
+     * 保存当前登录用户
+     * @param user
+     * */
+
+    public void saveUserAvatar(UserAvatar user) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(UserDao.USER_COLUMN_NAME_ID, user.getMUserName());
+        values.put(UserDao.USER_COLUMN_NAME_NICK, user.getMUserNick());
+        values.put(UserDao.USER_COLUMN_NAME_AVATAR, user.getMAvatarId());
+        values.put(UserDao.USER_COLUMN_AVATAR_PATH, user.getMAvatarPath());
+        values.put(UserDao.USER_COLUMN_AVATAR_TYPE, user.getMAvatarType());
+        values.put(UserDao.USER_COLUMN_AVATAR_LAST_UPDATE_TIME, user.getMAvatarLastUpdateTime());
+        if (db.isOpen()) {
+            db.replace(UserDao.USER_TABLE_NAME, null, values);
+        }
+    }
 }
