@@ -3,6 +3,7 @@ package cn.ucai.superwechat.data;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.View;
 
 import com.google.gson.Gson;
 import com.squareup.okhttp.Call;
@@ -263,7 +264,7 @@ public class OkHttpUtils2<T> {
         return this;
     }
 
-    public OkHttpUtils2<T> addFile(File file) {
+    public OkHttpUtils2<T> addFile2(File file) {
         if (mUrl == null) {
             return this;
         }
@@ -273,6 +274,14 @@ public class OkHttpUtils2<T> {
                 .type(MultipartBuilder.FORM)
                 .addPart(Headers.of("Content-Disposition","form-data; name=\"file\";filename=\""+file.getName()+"\""), fileBody)
                 .build();
+        return this;
+    }
+
+    public OkHttpUtils2<T> addFile(File file) {
+        if (mUrl == null) {
+            return this;
+        }
+        mFileBody = RequestBody.create(null, file);
         return this;
     }
 
