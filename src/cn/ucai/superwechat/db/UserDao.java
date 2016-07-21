@@ -116,7 +116,8 @@ public class UserDao {
 		DemoDBManager.getInstance().saveUserAvatar(user);
 
 	}
-
+   /**根据用户名获取信息
+	* */
 	public UserAvatar getUserAvatar(String username) {
 		return DemoDBManager.getInstance().getUserAvatar(username);
 	}

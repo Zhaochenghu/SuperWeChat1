@@ -5,6 +5,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.animation.AlphaAnimation;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -56,12 +57,16 @@ public class SplashActivity extends BaseActivity {
 					long start = System.currentTimeMillis();
 					EMGroupManager.getInstance().loadAllGroups();
 					EMChatManager.getInstance().loadAllConversations();
+
 					String username = SuperWeChatApplication.getInstance().getUserName();
+					Log.e(TAG, "username=" + username);
 					UserDao dao = new UserDao(SplashActivity.this);
 					UserAvatar user = dao.getUserAvatar(username);
-					SuperWeChatApplication.getInstance().setUser(user);
+					Log.e(TAG, "user=" + user);
+					/*SuperWeChatApplication.getInstance().setUser(user);
 					SuperWeChatApplication.currentUserNick = user.getMUserNick();
-					new DownloadContactListTask(SplashActivity.this, username).execute();
+					new DownloadContactListTask(SplashActivity.this, username).execute();*/
+
 					long costTime = System.currentTimeMillis() - start;
 					//等待sleeptime时长
 					if (sleepTime - costTime > 0) {

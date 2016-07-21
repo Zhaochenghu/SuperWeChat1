@@ -364,14 +364,13 @@ public class DemoDBManager {
         }
     }
 
-    synchronized public UserAvatar getUserAvatar(String username) {
+    synchronized public UserAvatar getUserAvatar(String userName) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("select * from " + UserDao.USER_TABLE_NAME + "where"
-                + UserDao.USER_COLUMN_NAME_ID + "=?", new String[]{username});
+        Cursor cursor = db.rawQuery("select * from " + UserDao.USER_TABLE_NAME  + " where "+  UserDao.USER_COLUMN_NAME_ID + " = ? ", new String[]{userName});
         UserAvatar user = null;
         if (cursor.moveToNext()) {
             user = new UserAvatar();
-            user.setMUserName(username);
+            user.setMUserName(userName);
             user.setMUserNick(cursor.getString(cursor.getColumnIndex(UserDao.USER_COLUMN_NAME_NICK)));
             user.setMAvatarId(cursor.getInt(cursor.getColumnIndex(UserDao.USER_COLUMN_NAME_AVATAR)));
             user.setMAvatarType(cursor.getInt(cursor.getColumnIndex(UserDao.USER_COLUMN_AVATAR_TYPE)));
