@@ -44,6 +44,7 @@ import android.text.ClipboardManager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -385,6 +386,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 			if(robotMap!=null&&robotMap.containsKey(toChatUsername)){
 				isRobot = true;
 				String nick = robotMap.get(toChatUsername).getNick();
+				Log.e(TAG, "nick=" + nick);
 				if(!TextUtils.isEmpty(nick)){
 					((TextView) findViewById(R.id.name)).setText(nick);
 				}else{
