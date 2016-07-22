@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import cn.ucai.superwechat.I;
 import cn.ucai.superwechat.SuperWeChatApplication;
+import cn.ucai.superwechat.activity.UserProfileActivity;
 import cn.ucai.superwechat.applib.controller.HXSDKHelper;
 import cn.ucai.superwechat.DemoHXSDKHelper;
 import cn.ucai.superwechat.R;
@@ -16,7 +17,9 @@ import cn.ucai.superwechat.domain.User;
 import com.squareup.picasso.Picasso;
 
 public class UserUtils {
-    /**
+	private static final String TAG = UserUtils.class.getSimpleName();
+
+	/**
      * 根据username获取相应user，由于demo没有真实的用户数据，这里给的模拟的数据；
      * @param username
      * @return
@@ -67,7 +70,7 @@ public class UserUtils {
 		String path = "";
 		if(path != null && username != null){
 			path = getUserAvatarPath(username);
-			//Log.e(TAG, "path=" + path);
+			Log.e(TAG, "path=" + path);
 			Picasso.with(context).load(path).placeholder(R.drawable.default_avatar).into(imageView);
 		}else{
 			Picasso.with(context).load(R.drawable.default_avatar).into(imageView);
@@ -144,5 +147,6 @@ public class UserUtils {
 		}
 		((DemoHXSDKHelper) HXSDKHelper.getInstance()).saveContact(newUser);
 	}
-    
+
+
 }

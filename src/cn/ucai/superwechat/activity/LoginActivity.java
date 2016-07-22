@@ -15,6 +15,7 @@ package cn.ucai.superwechat.activity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.IllegalFormatCodePointException;
 import java.util.List;
 import java.util.Map;
 
@@ -85,6 +86,9 @@ public class LoginActivity extends BaseActivity {
 
 		// 如果用户名改变，清空密码
 		setListener();
+		if (SuperWeChatApplication.getInstance().getUserName() != null) {
+			usernameEditText.setText(SuperWeChatApplication.getInstance().getUserName());
+		}
 	}
 
 	private void setListener() {
@@ -104,9 +108,6 @@ public class LoginActivity extends BaseActivity {
 
 			}
 		});
-		if (SuperWeChatApplication.getInstance().getUserName() != null) {
-			usernameEditText.setText(SuperWeChatApplication.getInstance().getUserName());
-		}
 	}
 
 	/**
@@ -195,6 +196,7 @@ public class LoginActivity extends BaseActivity {
 							}
 						} else {
 							pd.dismiss();
+							//DemoHXSDKHelper.getInstance().logout(true,null);
 							Toast.makeText(getApplicationContext(),R.string.Login_failed
 									+ Utils.getResourceString(LoginActivity.this,result.getRetCode()),
 									Toast.LENGTH_LONG).show();
