@@ -594,10 +594,13 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 							@Override
 							public void onSuccess(Result result) {
 								if (result.isRetMsg()) {
+									Log.e(TAG, "result remove user...");
+
 									((DemoHXSDKHelper) HXSDKHelper.getInstance()).getContactList().remove(username);
 									UserAvatar u = SuperWeChatApplication.getInstance().getUserMap().get(username);
 									SuperWeChatApplication.getInstance().getUserList().remove(u);
 									SuperWeChatApplication.getInstance().getUserMap().remove(username);
+
 									userDao.deleteContact(username);
 									inviteMessgeDao.deleteMessage(username);
 									sendStickyBroadcast(new Intent("update_contact_list"));
@@ -610,6 +613,7 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 							}
 						});
 			}
+			Log.e(TAG, "onContactDeleted,usernameList= 2——2");
 			runOnUiThread(new Runnable() {
 				public void run() {
 					// 如果正在与此用户的聊天页面
