@@ -1,6 +1,7 @@
 package cn.ucai.superwechat.activity;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -13,6 +14,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -36,6 +38,7 @@ import cn.ucai.superwechat.bean.UserAvatar;
 import cn.ucai.superwechat.data.OkHttpUtils2;
 import cn.ucai.superwechat.db.UserDao;
 import cn.ucai.superwechat.domain.User;
+import cn.ucai.superwechat.listener.OnSetAvatarListener;
 import cn.ucai.superwechat.utils.UserUtils;
 import cn.ucai.superwechat.utils.Utils;
 
@@ -52,10 +55,10 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 	private TextView tvUsername;
 	private ProgressDialog dialog;
 	private RelativeLayout rlNickName;
-	
-	
-	
-	@Override
+	private OnSetAvatarListener mOnSetAvatarListener;
+    private String avatarName;
+
+    @Override
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
 		setContentView(R.layout.activity_user_profile);
@@ -99,37 +102,39 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 		}
 	}
 
-	@Override
-	public void onClick(View v) {
-		switch (v.getId()) {
-		case R.id.user_head_avatar:
-			uploadHeadPhoto();
-			break;
-		case R.id.rl_nickname:
-			final EditText editText = new EditText(this);
-            Log.e(TAG, "nick=" + SuperWeChatApplication.getInstance().getUser());
-            Log.e(TAG,"nick=" + SuperWeChatApplication.currentUserNick);
-            editText.setText(SuperWeChatApplication.getInstance().getUser().getMUserNick());
-			new AlertDialog.Builder(this).setTitle(R.string.setting_nickname).setIcon(android.R.drawable.ic_dialog_info).setView(editText)
-					.setPositiveButton(R.string.dl_ok, new DialogInterface.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.user_head_avatar:
+                //uploadHeadPhoto();
+                mOnSetAvatarListener = new OnSetAvatarListener(UserProfileActivity.this, R.id.layout_upload_avatar,
+                        getAvatarName(), I.AVATAR_TYPE_USER_PATH);
+                break;
+            case R.id.rl_nickname:
+                final EditText editText = new EditText(this);
+                Log.e(TAG, "nick=" + SuperWeChatApplication.getInstance().getUser());
+                Log.e(TAG, "nick=" + SuperWeChatApplication.currentUserNick);
+                editText.setText(SuperWeChatApplication.getInstance().getUser().getMUserNick());
+                new AlertDialog.Builder(this).setTitle(R.string.setting_nickname).setIcon(android.R.drawable.ic_dialog_info).setView(editText)
+                        .setPositiveButton(R.string.dl_ok, new DialogInterface.OnClickListener() {
 
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							String nickString = editText.getText().toString();
-							if (TextUtils.isEmpty(nickString)) {
-								Toast.makeText(UserProfileActivity.this, getString(R.string.toast_nick_not_isnull), Toast.LENGTH_SHORT).show();
-								return;
-							}
-							updateAppNick(nickString);
-							updateRemoteNick(nickString);
-						}
-					}).setNegativeButton(R.string.dl_cancel, null).show();
-			break;
-		default:
-			break;
-		}
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String nickString = editText.getText().toString();
+                                if (TextUtils.isEmpty(nickString)) {
+                                    Toast.makeText(UserProfileActivity.this, getString(R.string.toast_nick_not_isnull), Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                                updateAppNick(nickString);
+                                updateRemoteNick(nickString);
+                            }
+                        }).setNegativeButton(R.string.dl_cancel, null).show();
+                break;
+            default:
+                break;
+        }
 
-	}
+    }
 
 	private void updateAppNick(final String nickString) {
 		final OkHttpUtils2<String> utils = new OkHttpUtils2<String>();
@@ -273,9 +278,45 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 			break;
 		}
 		super.onActivityResult(requestCode, resultCode, data);
-	}
+        if (requestCode != RESULT_OK) {
+            return;
+        }
+        mOnSetAvatarListener.setAvatar(requestCode,data,headAvatar);
+        if (requestCode == OnSetAvatarListener.REQUEST_CROP_PHOTO) {
+            Log.e(TAG, "upload avatar to app server...");
+            uploadUserAvatar();
+        }
+    }
 
-	public void startPhotoZoom(Uri uri) {
+    private void uploadUserAvatar() {
+        File file = new File(OnSetAvatarListener.getAvatarPath(UserProfileActivity.this, I.AVATAR_TYPE_USER_PATH),
+                avatarName + I.AVATAR_SUFFIX_JPG);
+        String username = SuperWeChatApplication.getInstance().getUserName();
+        final OkHttpUtils2<Result> utils = new OkHttpUtils2<Result>();
+        utils.setRequestUrl(I.REQUEST_UPLOAD_AVATAR)
+                .addParam(I.NAME_OR_HXID,username)
+                .addParam(I.AVATAR_TYPE,I.AVATAR_TYPE_USER_PATH)
+                .addFile(file)
+                .execute(new OkHttpUtils2.OnCompleteListener<Result>() {
+                    @Override
+                    public void onSuccess(Result result) {
+                        Log.e(TAG, "result=" + result);
+                        if (result.isRetMsg()) {
+                            Toast.makeText(UserProfileActivity.this, getString(R.string.toast_updatephoto_success),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        Log.e(TAG, "register error ..." + error);
+                        Toast.makeText(UserProfileActivity.this, getString(R.string.toast_updatephoto_fail),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    public void startPhotoZoom(Uri uri) {
 		Intent intent = new Intent("com.android.camera.action.CROP");
 		intent.setDataAndType(uri, "image/*");
 		intent.putExtra("crop", true);
@@ -338,4 +379,9 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 		bm.compress(Bitmap.CompressFormat.PNG, 100, baos);
 		return baos.toByteArray();
 	}
+
+    public String getAvatarName() {
+        avatarName = String.valueOf(System.currentTimeMillis());
+        return avatarName;
+    }
 }
