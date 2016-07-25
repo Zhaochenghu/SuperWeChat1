@@ -582,12 +582,33 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 		public void onContactDeleted(final List<String> usernameList) {
 			Log.e(TAG, "onContactDeleted,usernameList=" + usernameList);
 			// 被删除
-			Map<String, User> localUsers = ((DemoHXSDKHelper)HXSDKHelper.getInstance()).getContactList();
-			for (String username : usernameList) {
+			String currentUserName = SuperWeChatApplication.getInstance().getUserName();
+			for (final String username : usernameList) {
 				Log.e(TAG, "onContactDeleted,username=" + username);
-				localUsers.remove(username);
-				userDao.deleteContact(username);
-				inviteMessgeDao.deleteMessage(username);
+				final OkHttpUtils2<Result> utils = new OkHttpUtils2<Result>();
+				utils.setRequestUrl(I.REQUEST_DELETE_CONTACT)
+						.addParam(I.Contact.USER_NAME, currentUserName)
+						.addParam(I.Contact.CU_NAME,username)
+						.targetClass(Result.class)
+						.execute(new OkHttpUtils2.OnCompleteListener<Result>() {
+							@Override
+							public void onSuccess(Result result) {
+								if (result.isRetMsg()) {
+									((DemoHXSDKHelper) HXSDKHelper.getInstance()).getContactList().remove(username);
+									UserAvatar u = SuperWeChatApplication.getInstance().getUserMap().get(username);
+									SuperWeChatApplication.getInstance().getUserList().remove(u);
+									SuperWeChatApplication.getInstance().getUserMap().remove(username);
+									userDao.deleteContact(username);
+									inviteMessgeDao.deleteMessage(username);
+									sendStickyBroadcast(new Intent("update_contact_list"));
+								}
+							}
+
+							@Override
+							public void onError(String error) {
+								Log.e(TAG, "error=" + error);
+							}
+						});
 			}
 			runOnUiThread(new Runnable() {
 				public void run() {
@@ -595,7 +616,7 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 					String st10 = getResources().getString(R.string.have_you_removed);
 					if (ChatActivity.activityInstance != null
 							&& usernameList.contains(ChatActivity.activityInstance.getToChatUsername())) {
-						Toast.makeText(MainActivity.this, ChatActivity.activityInstance.getToChatUsername() + st10, 1)
+						Toast.makeText(MainActivity.this, ChatActivity.activityInstance.getToChatUsername() + st10, Toast.LENGTH_LONG)
 								.show();
 						ChatActivity.activityInstance.finish();
 					}
