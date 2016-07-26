@@ -163,7 +163,7 @@ public class NewGroupActivity extends BaseActivity {
 
 	}
 
-	private void createAppGroup(String groupId, String groupName, String desc, String[] members) {
+	private void createAppGroup(final String groupId, String groupName, String desc, final String[] members) {
 		boolean isPublic = checkBox.isChecked();
 		boolean invites = !isPublic;
 		File file = new File(OnSetAvatarListener.getAvatarPath(NewGroupActivity.this,I.AVATAR_TYPE_GROUP_PATH),
@@ -185,6 +185,54 @@ public class NewGroupActivity extends BaseActivity {
 						Log.e(TAG, "s=" + s);
 						Result result = Utils.getResultFromJson(s,GroupAvatar.class);
 						//List<GroupAvatar> list = (List<GroupAvatar>) result.getRetData();
+						GroupAvatar groupAvatar = (GroupAvatar) result.getRetData();
+						Log.e(TAG,"result="+result);
+						if (result != null && result.isRetMsg()) {
+							if (members != null && members.length > 0) {
+								addGroupMembers(groupId,members);
+							}else {
+
+								runOnUiThread(new Runnable() {
+									public void run() {
+										progressDialog.dismiss();
+										setResult(RESULT_OK);
+										finish();
+									}
+								});
+							}
+						}
+					}
+
+					@Override
+					public void onError(String error) {
+						Log.e(TAG, "error=" + error);
+						progressDialog.dismiss();
+						Toast.makeText(NewGroupActivity.this, st2 + error, Toast.LENGTH_LONG).show();
+					}
+				});
+	}
+
+	private void addGroupMembers(String hxid, String[] members) {
+		Log.e(TAG, "members=" + members);
+		Log.e(TAG, "members=" + members.toString());
+		String memberArr = "";
+		for (String m : members) {
+			memberArr += m + ",";
+		}
+		memberArr.substring(0, memberArr.length()-1);
+		Log.e(TAG, "memberArr=" + memberArr);
+		final OkHttpUtils2<String> utils = new OkHttpUtils2<String>();
+		utils.setRequestUrl(I.REQUEST_ADD_GROUP_MEMBERS)
+				.addParam(I.Member.GROUP_HX_ID,hxid)
+				.addParam(I.Member.USER_NAME,memberArr)
+				.targetClass(String.class)
+				.execute(new OkHttpUtils2.OnCompleteListener<String>() {
+					@Override
+					public void onSuccess(String s) {
+						Log.e(TAG, "s=" + s);
+						Result result = Utils.getResultFromJson(s,GroupAvatar.class);
+						//List<GroupAvatar> list = (List<GroupAvatar>) result.getRetData();
+						GroupAvatar groupAvatar = (GroupAvatar) result.getRetData();
 						Log.e(TAG,"result="+result);
 						if (result != null && result.isRetMsg()) {
 							runOnUiThread(new Runnable() {
@@ -194,12 +242,15 @@ public class NewGroupActivity extends BaseActivity {
 									finish();
 								}
 							});
+						} else {
+							progressDialog.dismiss();
+							Toast.makeText(NewGroupActivity.this, st2, Toast.LENGTH_LONG).show();
+
 						}
 					}
 
 					@Override
 					public void onError(String error) {
-						Log.e(TAG, "error=" + error);
 						progressDialog.dismiss();
 						Toast.makeText(NewGroupActivity.this, st2 + error, Toast.LENGTH_LONG).show();
 					}
