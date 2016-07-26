@@ -291,6 +291,7 @@
     <string name="title_user_profile">个人资料</string>
     <string name="nickname">昵称</string>
     <string name="dl_title_upload_photo">上传头像</string>
+    <string name="dl_title_uploadIcon_photo">上传群头像</string>
     <string name="dl_msg_local_upload">本地上传</string>
     <string name="dl_msg_take_photo">拍照上传</string>
     <string name="toast_no_support">暂不支持！</string>
