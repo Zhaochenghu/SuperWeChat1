@@ -93,11 +93,12 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 			/**当前在线用户昵称在个人资料显示*/
 			//UserUtils.setCurrentUserNick(tvNickName);
 			UserUtils.setAppCurrentUserNick(tvNickName);
-			UserUtils.setAppUserAvatar(this, EMChatManager.getInstance().getCurrentUser(),headAvatar);
+			//UserUtils.setAppUserAvatar(this, EMChatManager.getInstance().getCurrentUser(),headAvatar);
+			//UserUtils.setCurrentUserAvatar(this, headAvatar);
+			UserUtils.setAppUserAvatar(this, username, headAvatar);
 		} else {
 			tvUsername.setText(username);
 			UserUtils.setAppUserNick(username, tvNickName);
-			UserUtils.setAppUserAvatar(this, username, headAvatar);
 			//asyncFetchUserInfo(username);
 		}
 	}
@@ -228,7 +229,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 	
 
 	private void updateRemoteNick(final String nickName) {
-		dialog = ProgressDialog.show(this, getString(R.string.dl_update_nick), getString(R.string.dl_waiting));
+
 		new Thread(new Runnable() {
 
 			@Override
@@ -284,6 +285,8 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
         mOnSetAvatarListener.setAvatar(requestCode,data,headAvatar);
         if (requestCode == OnSetAvatarListener.REQUEST_CROP_PHOTO) {
             Log.e(TAG, "upload avatar to app server...");
+			dialog = ProgressDialog.show(this, getString(R.string.dl_update_nick), getString(R.string.dl_waiting));
+			dialog.show();
             uploadUserAvatar();
         }
     }
@@ -301,15 +304,20 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
                     @Override
                     public void onSuccess(Result result) {
                         Log.e(TAG, "result=" + result);
-                        if (result.isRetMsg()) {
-                            Toast.makeText(UserProfileActivity.this, getString(R.string.toast_updatephoto_success),
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
+						if (result.isRetMsg()) {
+							dialog.dismiss();
+							Toast.makeText(UserProfileActivity.this, getString(R.string.toast_updatephoto_success),
+									Toast.LENGTH_SHORT).show();
+						} else {
+							Toast.makeText(UserProfileActivity.this, getString(R.string.toast_updatephoto_fail),
+									Toast.LENGTH_SHORT).show();
+						}
+					}
 
                     @Override
                     public void onError(String error) {
                         Log.e(TAG, "register error ..." + error);
+						dialog.dismiss();
                         Toast.makeText(UserProfileActivity.this, getString(R.string.toast_updatephoto_fail),
                                 Toast.LENGTH_SHORT).show();
                     }
@@ -370,7 +378,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 			}
 		}).start();
 
-		dialog.show();
+
 	}
 	
 	
