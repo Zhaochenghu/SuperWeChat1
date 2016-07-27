@@ -12,9 +12,12 @@ import cn.ucai.superwechat.activity.UserProfileActivity;
 import cn.ucai.superwechat.applib.controller.HXSDKHelper;
 import cn.ucai.superwechat.DemoHXSDKHelper;
 import cn.ucai.superwechat.R;
+import cn.ucai.superwechat.bean.MemberUserAvatar;
 import cn.ucai.superwechat.bean.UserAvatar;
 import cn.ucai.superwechat.domain.User;
 import com.squareup.picasso.Picasso;
+
+import java.util.HashMap;
 
 public class UserUtils {
 	private static final String TAG = UserUtils.class.getSimpleName();
@@ -49,8 +52,21 @@ public class UserUtils {
 		}
 		return user;
 	}
-    
-    /**
+
+	public static MemberUserAvatar getAppMemberInfo(String hxid, String username) {
+		MemberUserAvatar member = null;
+		HashMap<String, MemberUserAvatar> members =
+				SuperWeChatApplication.getInstance().getMrmberMap().get(hxid);
+		Log.e(TAG,"hxid="+hxid+ ",members=" + members);
+		if (members == null || members.size() < 0) {
+			return null;
+		} else {
+			member = members.get(username);
+		}
+		return member;
+	}
+
+	/**
      * 设置用户头像
      * @param username
      */
@@ -201,4 +217,13 @@ public class UserUtils {
 	}
 
 
+	public static void setAppMemberNick(String hxid, String username, TextView textView) {
+		MemberUserAvatar member = getAppMemberInfo(hxid, username);
+		Log.e(TAG, "member=" + member);
+		if (member != null && member.getMUserNick() != null) {
+			textView.setText(member.getMUserNick());
+		} else {
+			textView.setText(username);
+		}
+	}
 }
