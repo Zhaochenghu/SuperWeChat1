@@ -78,6 +78,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 	private void initListener() {
 		Intent intent = getIntent();
 		String username = intent.getStringExtra("username");
+		String hxid = intent.getStringExtra("groupId");
 		boolean enableUpdate = intent.getBooleanExtra("setting", false);
 		if (enableUpdate) {
 			headPhotoUpdate.setVisibility(View.VISIBLE);
@@ -91,15 +92,16 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 		if (username == null||username.equals(EMChatManager.getInstance().getCurrentUser())) {
 			tvUsername.setText(EMChatManager.getInstance().getCurrentUser());
 			/**当前在线用户昵称在个人资料显示*/
-			//UserUtils.setCurrentUserNick(tvNickName);
 			UserUtils.setAppCurrentUserNick(tvNickName);
-			//UserUtils.setAppUserAvatar(this, EMChatManager.getInstance().getCurrentUser(),headAvatar);
-			//UserUtils.setCurrentUserAvatar(this, headAvatar);
 			UserUtils.setAppUserAvatar(this, username, headAvatar);
+		} else if (hxid != null) {
+			tvUsername.setText(username);
+			UserUtils.setAppMemberNick(hxid,username,tvNickName);
+			UserUtils.setAppUserAvatar(this,username,headAvatar);
 		} else {
 			tvUsername.setText(username);
 			UserUtils.setAppUserNick(username, tvNickName);
-			//asyncFetchUserInfo(username);
+			UserUtils.setAppUserAvatar(this,username,headAvatar);
 		}
 	}
 
