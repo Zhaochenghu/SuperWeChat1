@@ -189,16 +189,10 @@ public class NewGroupActivity extends BaseActivity {
 						Log.e(TAG,"result="+result);
 						if (result != null && result.isRetMsg()) {
 							if (members != null && members.length > 0) {
-								addGroupMembers(groupId,members);
+								addGroupMembers(groupId,members,groupAvatar);
 							}else {
 
-								runOnUiThread(new Runnable() {
-									public void run() {
-										progressDialog.dismiss();
-										setResult(RESULT_OK);
-										finish();
-									}
-								});
+								createGroupSuccess(groupAvatar);
 							}
 						}
 					}
@@ -212,7 +206,19 @@ public class NewGroupActivity extends BaseActivity {
 				});
 	}
 
-	private void addGroupMembers(String hxid, String[] members) {
+	private void createGroupSuccess(GroupAvatar group) {
+		SuperWeChatApplication.getInstance().getGroupMap().put(group.getMGroupHxid(), group);
+		SuperWeChatApplication.getInstance().getGroupList().add(group);
+		runOnUiThread(new Runnable() {
+			public void run() {
+				progressDialog.dismiss();
+				setResult(RESULT_OK);
+				finish();
+			}
+		});
+	}
+
+	private void addGroupMembers(String hxid, String[] members,final GroupAvatar group) {
 		Log.e(TAG, "members=" + members);
 		Log.e(TAG, "members=" + members.toString());
 		String memberArr = "";
@@ -235,13 +241,7 @@ public class NewGroupActivity extends BaseActivity {
 						GroupAvatar groupAvatar = (GroupAvatar) result.getRetData();
 						Log.e(TAG,"result="+result);
 						if (result != null && result.isRetMsg()) {
-							runOnUiThread(new Runnable() {
-								public void run() {
-									progressDialog.dismiss();
-									setResult(RESULT_OK);
-									finish();
-								}
-							});
+							createGroupSuccess(group);
 						} else {
 							progressDialog.dismiss();
 							Toast.makeText(NewGroupActivity.this, st2, Toast.LENGTH_LONG).show();
