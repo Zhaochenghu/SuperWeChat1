@@ -18,6 +18,23 @@ public class GroupAvatar implements Serializable {
 	private Integer mgroupAffiliationsCount;
 	private Boolean mgroupIsPublic;
 	private Boolean mgroupAllowInvites;
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof GroupAvatar)) return false;
+
+		GroupAvatar that = (GroupAvatar) o;
+
+		return mgroupHxid.equals(that.mgroupHxid);
+
+	}
+
+	@Override
+	public int hashCode() {
+		return mgroupHxid.hashCode();
+	}
+
 	public GroupAvatar() {
 		super();
 	}
