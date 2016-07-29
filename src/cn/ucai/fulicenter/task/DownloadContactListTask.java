@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import cn.ucai.fulicenter.I;
-import cn.ucai.fulicenter.SuperWeChatApplication;
+import cn.ucai.fulicenter.FuliCenterApplication;
 import cn.ucai.fulicenter.bean.Result;
 import cn.ucai.fulicenter.bean.UserAvatar;
 import cn.ucai.fulicenter.data.OkHttpUtils2;
@@ -40,9 +40,9 @@ public class DownloadContactListTask {
                         Log.e(TAG, "list=" + list);
                         if (list != null && list.size() > 0) {
                             Log.e(TAG, "list.size=" + list.size());
-                            SuperWeChatApplication.getInstance().setUserList(list);
+                            FuliCenterApplication.getInstance().setUserList(list);
                             mcontext.sendStickyBroadcast(new Intent("update_contact_list"));
-                            Map<String, UserAvatar> userMap = SuperWeChatApplication.getInstance().getUserMap();
+                            Map<String, UserAvatar> userMap = FuliCenterApplication.getInstance().getUserMap();
                             for (UserAvatar u : list) {
                                 userMap.put(u.getMUserName(), u);
                             }

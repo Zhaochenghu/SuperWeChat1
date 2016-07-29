@@ -44,7 +44,7 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
 import cn.ucai.fulicenter.Constant;
-import cn.ucai.fulicenter.SuperWeChatApplication;
+import cn.ucai.fulicenter.FuliCenterApplication;
 import cn.ucai.fulicenter.DemoHXSDKHelper;
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.bean.Result;
@@ -92,8 +92,8 @@ public class LoginActivity extends BaseActivity {
 
 		// 如果用户名改变，清空密码
 		setListener();
-		if (SuperWeChatApplication.getInstance().getUserName() != null) {
-			usernameEditText.setText(SuperWeChatApplication.getInstance().getUserName());
+		if (FuliCenterApplication.getInstance().getUserName() != null) {
+			usernameEditText.setText(FuliCenterApplication.getInstance().getUserName());
 		}
 	}
 
@@ -258,10 +258,10 @@ public class LoginActivity extends BaseActivity {
 
 	private void loginSuccess(UserAvatar user) {
 		// 登陆成功，保存用户名密码
-		SuperWeChatApplication.getInstance().setUserName(currentUsername);
-		SuperWeChatApplication.getInstance().setPassword(currentPassword);
-		SuperWeChatApplication.getInstance().setUser(user);
-		SuperWeChatApplication.currentUserNick = user.getMUserNick();
+		FuliCenterApplication.getInstance().setUserName(currentUsername);
+		FuliCenterApplication.getInstance().setPassword(currentPassword);
+		FuliCenterApplication.getInstance().setUser(user);
+		FuliCenterApplication.currentUserNick = user.getMUserNick();
 
 		new DownloadContactListTask(LoginActivity.this,currentUsername).execute();
 
@@ -287,7 +287,7 @@ public class LoginActivity extends BaseActivity {
 		}
 		// 更新当前用户的nickname 此方法的作用是在ios离线推送时能够显示用户nick
 		boolean updatenick = EMChatManager.getInstance().updateCurrentUserNick(
-				SuperWeChatApplication.currentUserNick.trim());
+				FuliCenterApplication.currentUserNick.trim());
 		if (!updatenick) {
 			Log.e("LoginActivity", "update current user nick fail");
 		}
