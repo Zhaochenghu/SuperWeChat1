@@ -418,7 +418,7 @@ public class MessageAdapter extends BaseAdapter{
 		if ((chatType == ChatType.GroupChat || chatType == ChatType.ChatRoom) && message.direct == EMMessage.Direct.RECEIVE){
 		    //demo里使用username代码nick
 			//UserUtils.setUserNick(message.getFrom(), holder.tv_usernick);
-			UserUtils.setAppMemberNick(username, message.getFrom(), holder.tv_usernick);
+			//UserUtils.setAppMemberNick(username, message.getFrom(), holder.tv_usernick);
 		}
 		if(message.direct == EMMessage.Direct.SEND){
 			UserUtils.setCurrentUserNick(holder.tv_usernick);
@@ -1230,7 +1230,6 @@ public class MessageAdapter extends BaseAdapter{
 	 * 
 	 * @param message
 	 * @param holder
-	 * @param position
 	 */
 	public void sendMsgInBackground(final EMMessage message, final ViewHolder holder) {
 		holder.staus_iv.setVisibility(View.GONE);

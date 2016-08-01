@@ -99,7 +99,6 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 	// 账号被移除
 	private boolean isCurrentAccountRemoved = false;
 	
-	private MyConnectionListener connectionListener = null;
 	private MyGroupChangeListener groupChangeListener = null;
 
 	/**
@@ -163,10 +162,6 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 		// setContactListener监听联系人的变化等
 		EMContactManager.getInstance().setContactListener(new MyContactListener());
 		// 注册一个监听连接状态的listener
-		
-		connectionListener = new MyConnectionListener();
-		EMChatManager.getInstance().addConnectionListener(connectionListener);
-		
 		groupChangeListener = new MyGroupChangeListener();
 		// 注册群聊相关的listener
         EMGroupManager.getInstance().addGroupChangeListener(groupChangeListener);
@@ -176,33 +171,6 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 		registerInternalDebugReceiver();
 	}
 
-
-	
-	static void asyncFetchGroupsFromServer(){
-	    HXSDKHelper.getInstance().asyncFetchGroupsFromServer(new EMCallBack(){
-
-            @Override
-            public void onSuccess() {
-                HXSDKHelper.getInstance().noitifyGroupSyncListeners(true);
-                
-                if(HXSDKHelper.getInstance().isContactsSyncedWithServer()){
-                    HXSDKHelper.getInstance().notifyForRecevingEvents();
-                }
-            }
-
-            @Override
-            public void onError(int code, String message) {
-                HXSDKHelper.getInstance().noitifyGroupSyncListeners(false);                
-            }
-
-            @Override
-            public void onProgress(int progress, String status) {
-                
-            }
-            
-        });
-	}
-	
 	static void asyncFetchContactsFromServer(){
 	    HXSDKHelper.getInstance().asyncFetchContactsFromServer(new EMValueCallBack<List<String>>(){
 
@@ -227,12 +195,12 @@ public class MainActivity extends BaseActivity implements EMEventListener {
         
                 userlist.put(Constant.NEW_FRIENDS_USERNAME, newFriends);
                 // 添加"群聊"
-                User groupUser = new User();
+              /*  User groupUser = new User();
                 String strGroup = context.getString(R.string.group_chat);
                 groupUser.setUsername(Constant.GROUP_USERNAME);
                 groupUser.setNick(strGroup);
                 groupUser.setHeader("");
-                userlist.put(Constant.GROUP_USERNAME, groupUser);
+                userlist.put(Constant.GROUP_USERNAME, groupUser);*/
                 
                /*  // 添加"聊天室"
                 User chatRoomItem = new User();
@@ -284,7 +252,7 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 	        
 	    });
 	}
-	
+
 	static void asyncFetchBlackListFromServer(){
 	    HXSDKHelper.getInstance().asyncFetchBlackListFromServer(new EMValueCallBack<List<String>>(){
 
@@ -436,11 +404,6 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 			conflictBuilder.create().dismiss();
 			conflictBuilder = null;
 		}
-
-		if(connectionListener != null){
-		    EMChatManager.getInstance().removeConnectionListener(connectionListener);
-		}
-		
 		if(groupChangeListener != null){
 		    EMGroupManager.getInstance().removeGroupChangeListener(groupChangeListener);
 		}
@@ -685,77 +648,6 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 	}
 
 	/**
-	 * 连接监听listener
-	 * 
-	 */
-	public class MyConnectionListener implements EMConnectionListener {
-
-		@Override
-		public void onConnected() {
-            boolean groupSynced = HXSDKHelper.getInstance().isGroupsSyncedWithServer();
-            boolean contactSynced = HXSDKHelper.getInstance().isContactsSyncedWithServer();
-            
-            // in case group and contact were already synced, we supposed to notify sdk we are ready to receive the events
-            if(groupSynced && contactSynced){
-                new Thread(){
-                    @Override
-                    public void run(){
-                        HXSDKHelper.getInstance().notifyForRecevingEvents();
-                    }
-                }.start();
-            }else{
-                if(!groupSynced){
-                    asyncFetchGroupsFromServer();
-                }
-                
-                if(!contactSynced){
-                    asyncFetchContactsFromServer();
-                }
-                
-                if(!HXSDKHelper.getInstance().isBlackListSyncedWithServer()){
-                    asyncFetchBlackListFromServer();
-                }
-            }
-            
-			runOnUiThread(new Runnable() {
-
-				@Override
-				public void run() {
-					chatHistoryFragment.errorItem.setVisibility(View.GONE);
-				}
-
-			});
-		}
-
-		@Override
-		public void onDisconnected(final int error) {
-			final String st1 = getResources().getString(R.string.can_not_connect_chat_server_connection);
-			final String st2 = getResources().getString(R.string.the_current_network);
-			runOnUiThread(new Runnable() {
-
-				@Override
-				public void run() {
-					if (error == EMError.USER_REMOVED) {
-						// 显示帐号已经被移除
-						showAccountRemovedDialog();
-					} else if (error == EMError.CONNECTION_CONFLICT) {
-						// 显示帐号在其他设备登陆dialog
-						showConflictDialog();
-					} else {
-						chatHistoryFragment.errorItem.setVisibility(View.VISIBLE);
-						if (NetUtils.hasNetwork(MainActivity.this))
-							chatHistoryFragment.errorText.setText(st1);
-						else
-							chatHistoryFragment.errorText.setText(st2);
-
-					}
-				}
-
-			});
-		}
-	}
-
-	/**
 	 * MyGroupChangeListener
 	 */
 	public class MyGroupChangeListener implements EMGroupChangeListener {
@@ -792,9 +684,9 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 					// 刷新ui
 					if (currentTabIndex == 0)
 						chatHistoryFragment.refresh();
-					if (CommonUtils.getTopActivity(MainActivity.this).equals(GroupsActivity.class.getName())) {
+					/*if (CommonUtils.getTopActivity(MainActivity.this).equals(GroupsActivity.class.getName())) {
 						GroupsActivity.instance.onResume();
-					}
+					}*/
 				}
 			});
 
@@ -821,9 +713,9 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 						updateUnreadLabel();
 						if (currentTabIndex == 0)
 							chatHistoryFragment.refresh();
-						if (CommonUtils.getTopActivity(MainActivity.this).equals(GroupsActivity.class.getName())) {
+						/*if (CommonUtils.getTopActivity(MainActivity.this).equals(GroupsActivity.class.getName())) {
 							GroupsActivity.instance.onResume();
-						}
+						}*/
 					} catch (Exception e) {
 						EMLog.e(TAG, "refresh exception " + e.getMessage());
 					}
@@ -842,9 +734,9 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 					updateUnreadLabel();
 					if (currentTabIndex == 0)
 						chatHistoryFragment.refresh();
-					if (CommonUtils.getTopActivity(MainActivity.this).equals(GroupsActivity.class.getName())) {
+					/*if (CommonUtils.getTopActivity(MainActivity.this).equals(GroupsActivity.class.getName())) {
 						GroupsActivity.instance.onResume();
-					}
+					}*/
 				}
 			});
 
@@ -887,9 +779,9 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 					// 刷新ui
 					if (currentTabIndex == 0)
 						chatHistoryFragment.refresh();
-					if (CommonUtils.getTopActivity(MainActivity.this).equals(GroupsActivity.class.getName())) {
+					/*if (CommonUtils.getTopActivity(MainActivity.this).equals(GroupsActivity.class.getName())) {
 						GroupsActivity.instance.onResume();
-					}
+					}*/
 				}
 			});
 		}

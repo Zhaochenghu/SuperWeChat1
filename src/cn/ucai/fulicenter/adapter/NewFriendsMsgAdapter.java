@@ -41,7 +41,7 @@ import cn.ucai.fulicenter.bean.UserAvatar;
 import cn.ucai.fulicenter.data.OkHttpUtils2;
 import cn.ucai.fulicenter.db.InviteMessgeDao;
 import cn.ucai.fulicenter.domain.InviteMessage;
-import cn.ucai.fulicenter.task.DownloadMemberMapTask;
+
 import cn.ucai.fulicenter.utils.UserUtils;
 import cn.ucai.fulicenter.utils.Utils;
 
@@ -229,10 +229,10 @@ public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
 				.execute(new OkHttpUtils2.OnCompleteListener<String>() {
 					@Override
 					public void onSuccess(String s) {
-						Result result1 = Utils.getResultFromJson(s, GroupAdapter.class);
+						/*Result result1 = Utils.getResultFromJson(s, GroupAdapter.class);
 						if (result1 != null && result1.isRetMsg()) {
 							new DownloadMemberMapTask(context, hxid).execute();
-						}
+						}*/
 					}
 
 					@Override

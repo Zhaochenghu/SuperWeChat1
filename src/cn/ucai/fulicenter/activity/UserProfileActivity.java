@@ -77,7 +77,6 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 	private void initListener() {
 		Intent intent = getIntent();
 		String username = intent.getStringExtra("username");
-		String hxid = intent.getStringExtra("groupId");
 		boolean enableUpdate = intent.getBooleanExtra("setting", false);
 		if (enableUpdate) {
 			headPhotoUpdate.setVisibility(View.VISIBLE);
@@ -93,10 +92,6 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 			/**当前在线用户昵称在个人资料显示*/
 			UserUtils.setAppCurrentUserNick(tvNickName);
 			UserUtils.setAppUserAvatar(this, username, headAvatar);
-		} else if (hxid != null) {
-			tvUsername.setText(username);
-			UserUtils.setAppMemberNick(hxid,username,tvNickName);
-			UserUtils.setAppUserAvatar(this,username,headAvatar);
 		} else {
 			tvUsername.setText(username);
 			UserUtils.setAppUserNick(username, tvNickName);

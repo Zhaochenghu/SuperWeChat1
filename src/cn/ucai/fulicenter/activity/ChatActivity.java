@@ -13,19 +13,9 @@
  */
 package cn.ucai.fulicenter.activity;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -73,8 +63,6 @@ import com.easemob.EMError;
 import com.easemob.EMEventListener;
 import com.easemob.EMNotifierEvent;
 import com.easemob.EMValueCallBack;
-import cn.ucai.fulicenter.applib.controller.HXSDKHelper;
-import cn.ucai.fulicenter.applib.model.GroupRemoveListener;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMChatRoom;
 import com.easemob.chat.EMContactManager;
@@ -90,15 +78,29 @@ import com.easemob.chat.NormalFileMessageBody;
 import com.easemob.chat.TextMessageBody;
 import com.easemob.chat.VideoMessageBody;
 import com.easemob.chat.VoiceMessageBody;
-import cn.ucai.fulicenter.FuliCenterApplication;
+import com.easemob.exceptions.EaseMobException;
+import com.easemob.util.EMLog;
+import com.easemob.util.PathUtil;
+import com.easemob.util.VoiceRecorder;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import cn.ucai.fulicenter.DemoHXSDKHelper;
+import cn.ucai.fulicenter.FuliCenterApplication;
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.adapter.ExpressionAdapter;
 import cn.ucai.fulicenter.adapter.ExpressionPagerAdapter;
 import cn.ucai.fulicenter.adapter.MessageAdapter;
 import cn.ucai.fulicenter.adapter.VoicePlayClickListener;
+import cn.ucai.fulicenter.applib.controller.HXSDKHelper;
+import cn.ucai.fulicenter.applib.model.GroupRemoveListener;
 import cn.ucai.fulicenter.domain.RobotUser;
-import cn.ucai.fulicenter.task.DownloadMemberMapTask;
 import cn.ucai.fulicenter.utils.CommonUtils;
 import cn.ucai.fulicenter.utils.ImageUtils;
 import cn.ucai.fulicenter.utils.SmileUtils;
@@ -106,10 +108,6 @@ import cn.ucai.fulicenter.utils.UserUtils;
 import cn.ucai.fulicenter.utils.Utils;
 import cn.ucai.fulicenter.widget.ExpandGridView;
 import cn.ucai.fulicenter.widget.PasteEditText;
-import com.easemob.exceptions.EaseMobException;
-import com.easemob.util.EMLog;
-import com.easemob.util.PathUtil;
-import com.easemob.util.VoiceRecorder;
 
 /**
  * 聊天页面
@@ -427,7 +425,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	            forwardMessage(forward_msg_id);
 	        }
 		}
-		setUpdateMemberListener();
+
 	}
 
 	protected void onConversationInit(){
@@ -524,7 +522,6 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
             ((TextView) findViewById(R.id.name)).setText(toChatUsername);
         }
 		//下载群组成员
-        new DownloadMemberMapTask(getApplicationContext(),toChatUsername).execute();
         // 监听当前会话的群聊解散被T事件
         groupListener = new GroupListener();
         EMGroupManager.getInstance().addGroupChangeListener(groupListener);
@@ -908,8 +905,8 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	 * 
 	 * @param content
 	 *            message content
-	 * @param isResend
-	 *            boolean resend
+	 * @param
+	 *
 	 */
 	public void sendText(String content) {
 
@@ -1246,20 +1243,20 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	 * 点击进入群组详情
 	 * 
 	 * @param view
-	 */
+	 *//*
 	public void toGroupDetails(View view) {
 		if (room == null && group == null) {
 			Toast.makeText(getApplicationContext(), R.string.gorup_not_found, Toast.LENGTH_LONG).show();
 			return;
 		}
-		if(chatType == CHATTYPE_GROUP){
+		*//*if(chatType == CHATTYPE_GROUP){
 			startActivityForResult((new Intent(this, GroupDetailsActivity.class).putExtra("groupId", toChatUsername)),
 					REQUEST_CODE_GROUP_DETAIL);
 		}else{
 			startActivityForResult((new Intent(this, ChatRoomDetailsActivity.class).putExtra("roomId", toChatUsername)),
 					REQUEST_CODE_GROUP_DETAIL);
-		}
-	}
+		}*//*
+	}*/
 
 	/**
 	 * 显示或隐藏图标按钮页
@@ -1478,9 +1475,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 		if(groupListener != null){
 		    EMGroupManager.getInstance().removeGroupChangeListener(groupListener);
 		}
-		if (mReceiver != null) {
-			unregisterReceiver(mReceiver);
-		}
+
 	}
 
 	@Override
@@ -1624,7 +1619,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 				/*if (view.getFirstVisiblePosition() == 0 && !isloading && haveMoreData && conversation.getAllMessages().size() != 0) {
 					isloading = true;
 					loadmorePB.setVisibility(View.VISIBLE);
-					// sdk初始化加载的聊天记录为20条，到顶时去db里获取更多					
+					// sdk初始化加载的聊天记录为20条，到顶时去db里获取更多
 					List<EMMessage> messages;
 					EMMessage firstMsg = conversation.getAllMessages().get(0);
 					try {
@@ -1647,7 +1642,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 						if (messages.size() > 0) {
 							adapter.refreshSeekTo(messages.size() - 1);
 						}
-						
+
 						if (messages.size() != pagesize)
 							haveMoreData = false;
 					} else {
@@ -1730,8 +1725,8 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 				public void run() {
 					if (toChatUsername.equals(groupId)) {
 						Toast.makeText(ChatActivity.this, st13, Toast.LENGTH_LONG).show();
-						if (GroupDetailsActivity.instance != null)
-							GroupDetailsActivity.instance.finish();
+						/*if (GroupDetailsActivity.instance != null)
+							GroupDetailsActivity.instance.finish();*/
 						finish();
 					}
 				}
@@ -1747,8 +1742,8 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 				public void run() {
 					if (toChatUsername.equals(groupId)) {
 						Toast.makeText(ChatActivity.this, st14, Toast.LENGTH_LONG).show();
-						if (GroupDetailsActivity.instance != null)
-							GroupDetailsActivity.instance.finish();
+						/*if (GroupDetailsActivity.instance != null)
+							GroupDetailsActivity.instance.finish();*/
 						finish();
 					}
 				}
@@ -1764,21 +1759,5 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	public ListView getListView() {
 		return listView;
 	}
-
-	class UpdateMemberListener extends BroadcastReceiver {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			adapter.notifyDataSetChanged();
-		}
-	}
-	UpdateMemberListener mReceiver;
-	private void setUpdateMemberListener() {
-		mReceiver = new UpdateMemberListener();
-		IntentFilter filter = new IntentFilter("update_member_list");
-		registerReceiver(mReceiver, filter);
-	}
-
-
-
 
 }
