@@ -108,7 +108,7 @@ public class SplashActivity extends BaseActivity {
 						}
 					}
 					//进入主页面
-					startActivity(new Intent(SplashActivity.this, MainActivity.class));
+					startActivity(new Intent(SplashActivity.this, FuliCenterMainActivity.class));
 					finish();
 				}else {
 					try {

@@ -156,22 +156,16 @@ public class Utils {
                     return result;
                 }
             } else {
-                if (jsonObject != null) {
-                    Log.e("Utils", "jsonRetData=" + jsonObject);
-                    String date;
-                    try {
-                        date = URLDecoder.decode(jsonObject.toString(), I.UTF_8);
-                        Log.e("Utils", "jsonRetData=" + date);
-                        T t = new Gson().fromJson(date, clazz);
-                        result.setRetData(t);
-                        return result;
-                    } catch (UnsupportedEncodingException e1) {
-                        e1.printStackTrace();
-                        T t = new Gson().fromJson(jsonObject.toString(), clazz);
-                        result.setRetData(t);
-                        return result;
+                JSONArray array = new JSONArray(jsonStr);
+                if (array != null) {
+                    List<T> list = new ArrayList<T>();
+                    for (int i = 0;i<array.length();i++) {
+                        JSONObject jsonGroupAvatar = array.getJSONObject(i);
+                        T ga = new Gson().fromJson(jsonGroupAvatar.toString(),clazz);
+                        list.add(ga);
                     }
-
+                    result.setRetData(list);
+                    return result;
                 }
             }
             return result;

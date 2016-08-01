@@ -20,9 +20,9 @@ import cn.ucai.fulicenter.utils.Utils;
 public class DownloadContactListTask {
     String username;
     private final static String TAG = DownloadContactListTask.class.getSimpleName();
-    Context mcontext;
+    Context mContext;
     public DownloadContactListTask(Context context, String username) {
-        mcontext=context;
+        mContext=context;
         this.username = username;
     }
 
@@ -34,19 +34,23 @@ public class DownloadContactListTask {
                 .execute(new OkHttpUtils2.OnCompleteListener<String>() {
                     @Override
                     public void onSuccess(String s) {
+                        Log.e(TAG, "s=" + s);
                         Result result = Utils.getListResultFromJson(s, UserAvatar.class);
                         Log.e(TAG, "result=" + result);
-                        List<UserAvatar> list = (List<UserAvatar>) result.getRetData();
-                        Log.e(TAG, "list=" + list);
-                        if (list != null && list.size() > 0) {
-                            Log.e(TAG, "list.size=" + list.size());
-                            FuliCenterApplication.getInstance().setUserList(list);
-                            mcontext.sendStickyBroadcast(new Intent("update_contact_list"));
-                            Map<String, UserAvatar> userMap = FuliCenterApplication.getInstance().getUserMap();
-                            for (UserAvatar u : list) {
-                                userMap.put(u.getMUserName(), u);
-                            }
+                        if (result != null) {
+                            List<UserAvatar> list = (List<UserAvatar>) result.getRetData();
+                            Log.e(TAG, "list=" + list);
 
+                            if (list != null && list.size() > 0) {
+                                Log.e(TAG, "list.size=" + list.size());
+                                FuliCenterApplication.getInstance().setUserList(list);
+                                mContext.sendStickyBroadcast(new Intent("update_contact_list"));
+                                Map<String, UserAvatar> userMap = FuliCenterApplication.getInstance().getUserMap();
+                                for (UserAvatar u : list) {
+                                    userMap.put(u.getMUserName(), u);
+                                }
+
+                            }
                         }
                     }
 

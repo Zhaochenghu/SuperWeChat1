@@ -192,9 +192,11 @@ public class LoginActivity extends BaseActivity {
 					@Override
 					public void onSuccess(String s) {
 						Log.e(TAG,"s="+s);
-						Result result = Utils.getListResultFromJson(s, UserAvatar.class);
-						if (result != null && result.isRetMsg()) {
+						Result result = Utils.getResultFromJson(s, UserAvatar.class);
+						Log.e(TAG, "result=" + result);
+						if (result != null) {
 							UserAvatar user = (UserAvatar) result.getRetData();
+							Log.e(TAG,"user="+user);
 							if (user != null) {
 								downloadUserAvatar();
 								saveUserToDB(user);
