@@ -20,7 +20,7 @@
             android:orientation="horizontal">
             <RadioButton
                 android:id="@+id/layout_new_good"
-                android:drawableTop="@drawable/menu_item_new_good_normal"
+                android:drawableTop="@drawable/selector_menu_item_new_good"
                 style="@style/menu_item_style"
                 android:text="新品"
                 android:button="@null"
@@ -29,7 +29,7 @@
             <RadioButton
                 android:id="@+id/layout_boutique"
                 style="@style/menu_item_style"
-                android:drawableTop="@drawable/boutique_normal"
+                android:drawableTop="@drawable/selector_menu_item_boutique"
                 android:text="精选"
                 android:button="@null"
                 android:textColor="@color/main_botton_text_color"
@@ -37,7 +37,7 @@
             <RadioButton
                 android:id="@+id/layout_category"
                 style="@style/menu_item_style"
-                android:drawableTop="@drawable/menu_item_category_normal"
+                android:drawableTop="@drawable/selector_menu_item_category"
                 android:text="分类"
                 android:button="@null"
                 android:textColor="@color/main_botton_text_color"
@@ -46,8 +46,8 @@
                 style="@style/style_menu_item">
                 <RadioButton
                     android:id="@+id/layout_cart"
+                    android:drawableTop="@drawable/selector_menu_item_cart"
                     style="@style/menu_item_style_cart"
-                    android:drawableTop="@drawable/menu_item_cart_normal"
                     android:text="购物车"
                     android:button="@null"
                     android:textColor="@color/main_botton_text_color"
@@ -85,7 +85,7 @@
             <RadioButton
                 android:id="@+id/layout_personal"
                 style="@style/menu_item_style"
-                android:drawableTop="@drawable/menu_item_personal_center_normal"
+                android:drawableTop="@drawable/selector_menu_item_personal_center"
                 android:text="我"
                 android:button="@null"
                 android:textColor="@color/main_botton_text_color"
