@@ -80,8 +80,17 @@ public class Utils {
         Result result = new Result();
         try {
             JSONObject jsonObject = new JSONObject(jsonStr);
-            result.setRetCode(jsonObject.getInt("retCode"));
-            result.setRetMsg(jsonObject.getBoolean("retMsg"));
+            if (!jsonObject.isNull("retCode")) {
+
+                result.setRetCode(jsonObject.getInt("retCode"));
+            } else if (!jsonObject.isNull("msg")) {
+                result.setRetCode(jsonObject.getInt("msg"));
+            }
+            if (!jsonObject.isNull("retMsg")) {
+                result.setRetMsg(jsonObject.getBoolean("retMsg"));
+            } else if (!jsonObject.isNull("retData")) {
+                result.setRetMsg(jsonObject.getBoolean("retData"));
+            }
             if(!jsonObject.isNull("retData")) {
                 JSONObject jsonRetData = jsonObject.getJSONObject("retData");
                 if (jsonRetData != null) {
@@ -100,6 +109,24 @@ public class Utils {
                         result.setRetData(t);
                         return result;
                     }
+                }
+            }else {
+                if (jsonObject != null) {
+                    Log.e("Utils", "jsonRetData=" + jsonObject);
+                    String date;
+                    try {
+                        date = URLDecoder.decode(jsonObject.toString(), I.UTF_8);
+                        Log.e("Utils", "jsonRetData=" + date);
+                        T t = new Gson().fromJson(date, clazz);
+                        result.setRetData(t);
+                        return result;
+                    } catch (UnsupportedEncodingException e1) {
+                        e1.printStackTrace();
+                        T t = new Gson().fromJson(jsonObject.toString(), clazz);
+                        result.setRetData(t);
+                        return result;
+                    }
+
                 }
             }
             return result;
@@ -127,6 +154,24 @@ public class Utils {
                     }
                     result.setRetData(list);
                     return result;
+                }
+            } else {
+                if (jsonObject != null) {
+                    Log.e("Utils", "jsonRetData=" + jsonObject);
+                    String date;
+                    try {
+                        date = URLDecoder.decode(jsonObject.toString(), I.UTF_8);
+                        Log.e("Utils", "jsonRetData=" + date);
+                        T t = new Gson().fromJson(date, clazz);
+                        result.setRetData(t);
+                        return result;
+                    } catch (UnsupportedEncodingException e1) {
+                        e1.printStackTrace();
+                        T t = new Gson().fromJson(jsonObject.toString(), clazz);
+                        result.setRetData(t);
+                        return result;
+                    }
+
                 }
             }
             return result;
