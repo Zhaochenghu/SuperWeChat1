@@ -13,9 +13,11 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.ucai.fulicenter.I;
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.bean.NewGoodBean;
 import cn.ucai.fulicenter.utils.ImageUtils;
+import cn.ucai.fulicenter.view.FooterViewHolder;
 
 /**
  * Created by Administrator on 2016/8/1.
@@ -24,6 +26,21 @@ public class GoodAdapter extends RecyclerView.Adapter<ViewHolder>{
     Context mContext;
     List<NewGoodBean> mGoodList;
     GoodViewHolder mGoodViewHolder;
+    FooterViewHolder mFooterViewHolder;
+    boolean isMore;
+    String footerString;
+    public boolean isMore() {
+        return isMore;
+    }
+
+    public void setMore(boolean more) {
+        isMore = more;
+    }
+
+    public void setFooterString(String footerString) {
+        this.footerString = footerString;
+    }
+
     public GoodAdapter(Context context, List<NewGoodBean> list) {
         mContext = context;
         mGoodList = new ArrayList<NewGoodBean>();
@@ -33,9 +50,16 @@ public class GoodAdapter extends RecyclerView.Adapter<ViewHolder>{
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        ViewHolder holder = null;
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        holder = new GoodViewHolder(inflater.inflate(R.layout.item_good, null, false));
+        ViewHolder holder = null;
+        switch (viewType) {
+            case I.TYPE_FOOTER:
+                holder = new FooterViewHolder(inflater.inflate(R.layout.item_footer, parent, false));
+                break;
+            case I.TYPE_ITEM:
+                holder = new GoodViewHolder(inflater.inflate(R.layout.item_good, parent, false));
+                break;
+        }
         return holder;
     }
 
@@ -44,15 +68,28 @@ public class GoodAdapter extends RecyclerView.Adapter<ViewHolder>{
         if (holder instanceof GoodViewHolder) {
             mGoodViewHolder = (GoodViewHolder) holder;
             NewGoodBean good = mGoodList.get(position);
-            ImageUtils.setGoodThumb(mContext, mGoodViewHolder.ivGoodThumb, good.getGoodsThumb());
+            ImageUtils.setGoodImage(mContext, mGoodViewHolder.ivGoodThumb, good.getGoodsThumb());
             mGoodViewHolder.tvGoodName.setText(good.getGoodsName());
             mGoodViewHolder.tvGoodPrice.setText(good.getCurrencyPrice());
+        }
+        if (holder instanceof FooterViewHolder) {
+            mFooterViewHolder = (FooterViewHolder) holder;
+            mFooterViewHolder.tvFooter.setText(footerString);
+        }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (position == getItemCount() - 1) {
+            return I.TYPE_FOOTER;
+        } else {
+            return I.TYPE_ITEM;
         }
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return mGoodList != null ? mGoodList.size() + 1 : 1;
     }
 
     public void initItem(ArrayList<NewGoodBean> list) {

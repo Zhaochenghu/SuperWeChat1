@@ -49,7 +49,7 @@ public class ImageUtils {
         return path;
     }
 
-	public static void setGoodThumb(Context context, ImageView imageView, String thmub) {
+	public static void setGoodImage(Context context, ImageView imageView, String thmub) {
 		String url = I.DOWNLOAD_BOUTIQUE_IMG_URL + thmub;
 		Picasso.with(context).load(url).placeholder(R.drawable.nopic).into(imageView);
 

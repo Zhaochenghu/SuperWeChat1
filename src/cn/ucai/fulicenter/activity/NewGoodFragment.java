@@ -66,8 +66,11 @@ public class NewGoodFragment extends Fragment{
                 Log.e(TAG, "newState=" + newState);
                 if (newState == RecyclerView.SCROLL_STATE_IDLE
                         && lastItemPosition == mAdapter.getItemCount() - 1) {
-                    pageId += I.PAGE_SIZE_DEFAULT; 
-                    initData();
+                    if (mAdapter.isMore()) {
+
+                        pageId += I.PAGE_SIZE_DEFAULT;
+                        initData();
+                    }
                 }
             }
 
@@ -86,8 +89,9 @@ public class NewGoodFragment extends Fragment{
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                pageId = 0;
+                mSwipeRefreshLayout.setRefreshing(true);
                 tvHint.setVisibility(View.VISIBLE);
-                pageId = 1;
                 initData();
             }
         });
@@ -99,19 +103,26 @@ public class NewGoodFragment extends Fragment{
             findNewGoodList(new OkHttpUtils2.OnCompleteListener<NewGoodBean[]>() {
                 @Override
                 public void onSuccess(NewGoodBean[] result) {
-                    Log.e(TAG, "result=" + result);
-                    tvHint.setVisibility(View.GONE);
                     mSwipeRefreshLayout.setRefreshing(false);
+                    tvHint.setVisibility(View.GONE);
+                    mAdapter.setMore(true);
+                    mAdapter.setFooterString(getResources().getString(R.string.load_more));
+                    Log.e(TAG, "result=" + result);
                     if (result != null) {
                         Log.e(TAG, "result.length=" + result.length);
                         ArrayList<NewGoodBean> goodBeanArrayList = Utils.array2List(result);
                         mAdapter.initItem(goodBeanArrayList);
+                        if (goodBeanArrayList.size() < I.PAGE_SIZE_DEFAULT) {
+                            mAdapter.setMore(false);
+                            mAdapter.setFooterString(getResources().getString(R.string.no_more));
+                        }
                     }
                 }
 
                 @Override
                 public void onError(String error) {
                     Log.e(TAG, "error=" + error);
+                    mSwipeRefreshLayout.setRefreshing(false);
                     tvHint.setVisibility(View.GONE);
                     mSwipeRefreshLayout.setRefreshing(false);
                 }
