@@ -23,7 +23,8 @@ public class FuliCenterMainActivity extends BaseActivity{
 
     int index;
     int currentIndex;
-    private int radioButtonStatus;
+
+    NewGoodFragment mNewGoodFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +46,12 @@ public class FuliCenterMainActivity extends BaseActivity{
         mrbTabs[2] = rbCategory;
         mrbTabs[3] = rbCart;
         mrbTabs[4] = rbPersonal;
+
+        mNewGoodFragment = new NewGoodFragment();
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.fragment_container, mNewGoodFragment)
+                .show(mNewGoodFragment)
+                .commit();
     }
 
     public void onCheckedChange(View view) {

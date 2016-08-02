@@ -53,6 +53,14 @@ public class GoodAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         return 0;
     }
 
+    public void initItem(ArrayList<NewGoodBean> list) {
+        if (mGoodList != null) {
+            mGoodList.clear();
+        }
+        mGoodList.addAll(list);
+        notifyDataSetChanged();
+    }
+
     class GoodViewHolder extends RecyclerView.ViewHolder {
         LinearLayout layout ;
         ImageView ivGoodThumb;
