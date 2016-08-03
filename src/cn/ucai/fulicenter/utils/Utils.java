@@ -176,6 +176,7 @@ public class Utils {
     }
 
     public static <T> Result getPageResultFromJson(String jsonStr,Class<T> clazz){
+
         Result result = new Result();
         try {
             JSONObject jsonObject = new JSONObject(jsonStr);
@@ -205,4 +206,17 @@ public class Utils {
         }
         return  null;
     }
+
+    public static int px2dp(Context context,int px){
+        int density = (int) context.getResources().getDisplayMetrics().density;
+        return px/density;
+    }
+
+    public static int dp2px(Context context,int dp){
+        int density = (int) context.getResources().getDisplayMetrics().density;
+        return dp*density;
+    }
+
 }
+
+
