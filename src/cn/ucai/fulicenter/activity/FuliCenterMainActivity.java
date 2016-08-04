@@ -1,11 +1,14 @@
 package cn.ucai.fulicenter.activity;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import cn.ucai.fulicenter.BoutiqueFragment;
 import cn.ucai.fulicenter.R;
 
 /**
@@ -25,12 +28,23 @@ public class FuliCenterMainActivity extends BaseActivity{
     int currentIndex;
 
     NewGoodFragment mNewGoodFragment;
+    BoutiqueFragment mBoutiqueFragment;
+    private Fragment[] fragments;
+
+    private int currentTabIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fulicenter_main);
         initView();
+        initFragment();
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.fragment_container, mNewGoodFragment)
+                .add(R.id.fragment_container,mBoutiqueFragment)
+                .hide(mBoutiqueFragment)
+                .show(mNewGoodFragment)
+                .commit();
     }
 
     private void initView() {
@@ -46,12 +60,14 @@ public class FuliCenterMainActivity extends BaseActivity{
         mrbTabs[2] = rbCategory;
         mrbTabs[3] = rbCart;
         mrbTabs[4] = rbPersonal;
+    }
 
+    private void initFragment() {
         mNewGoodFragment = new NewGoodFragment();
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.fragment_container, mNewGoodFragment)
-                .show(mNewGoodFragment)
-                .commit();
+        mBoutiqueFragment = new BoutiqueFragment();
+        fragments = new Fragment[5];
+        fragments[0] = mNewGoodFragment;
+        fragments[1] = mBoutiqueFragment;
     }
 
     public void onCheckedChange(View view) {
@@ -73,8 +89,16 @@ public class FuliCenterMainActivity extends BaseActivity{
                 break;
         }
         Log.e(TAG, "index=" + index + ",currentIndex=" + currentIndex);
-        if (index != currentIndex) {
+
+        if (currentTabIndex != index) {
+            FragmentTransaction trx = getSupportFragmentManager().beginTransaction();
+            trx.hide(fragments[currentTabIndex]);
+            if (!fragments[index].isAdded()) {
+                trx.add(R.id.fragment_container, fragments[index]);
+            }
+            trx.show(fragments[index]).commit();
             setRadioButtonStatus(index);
+            currentTabIndex = index;
         }
     }
 

@@ -41,7 +41,7 @@ public class BoutiqueFragment extends Fragment{
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mContext = (FuliCenterMainActivity)getActivity();
+        mContext = (FuliCenterMainActivity)getContext();
         View layout = View.inflate(mContext, R.layout.boutique_fragment, null);
         mBoutiqueList = new ArrayList<BoutiqueBean>();
         initView(layout);
@@ -56,24 +56,14 @@ public class BoutiqueFragment extends Fragment{
     }
 
     private void setPullUpRefreshListener() {
-       /* mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
-            int lastItemPosition;
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                Log.e(TAG, "newState=" + newState);
-                if (newState == RecyclerView.SCROLL_STATE_IDLE
-                        && lastItemPosition == mBoutiqueAdapter.getItemCount() - 1) {
-                    if (mBoutiqueAdapter.isMore()) {
-                        action = I.ACTION_PULL_UP;
-                        initData();
-                    }
-                }*/
         mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             int lastItemPosition;
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
+                int a = RecyclerView.SCROLL_STATE_DRAGGING;//1
+                int b = RecyclerView.SCROLL_STATE_IDLE;//0
+                int c = RecyclerView.SCROLL_STATE_SETTLING;//2
                 Log.e(TAG, "newState=" + newState);
                 if (newState == RecyclerView.SCROLL_STATE_IDLE
                         && lastItemPosition == mBoutiqueAdapter.getItemCount() - 1) {
@@ -118,14 +108,14 @@ public class BoutiqueFragment extends Fragment{
                 Log.e(TAG, "result=" + result);
                 if (result != null) {
                     Log.e(TAG, "result.length=" + result.length);
-                    ArrayList<BoutiqueBean> goodBeanArrayList = Utils.array2List(result);
+                    ArrayList<BoutiqueBean> boutiqueBeen = Utils.array2List(result);
                     if (action == I.ACTION_DOWNLOAD || action == I.ACTION_PULL_DOWN) {
-                        mBoutiqueAdapter.initItem(goodBeanArrayList);
+                        mBoutiqueAdapter.initItem(boutiqueBeen);
 
                     } else {
-                        mBoutiqueAdapter.addItem(goodBeanArrayList);
+                        mBoutiqueAdapter.addItem(boutiqueBeen);
                     }
-                    if (goodBeanArrayList.size() < I.PAGE_SIZE_DEFAULT) {
+                    if (boutiqueBeen.size() < I.PAGE_SIZE_DEFAULT) {
                         mBoutiqueAdapter.setMore(false);
                         mBoutiqueAdapter.setFooterString(getResources().getString(R.string.no_more));
                     }
