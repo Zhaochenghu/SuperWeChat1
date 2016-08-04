@@ -74,25 +74,25 @@ public class CategoryAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-        GropViewHolder holder = null;
+        GroupViewHolder holder;
         if (convertView == null) {
             convertView = View.inflate(mContext, R.layout.item_category_group, null);
-            holder = new GropViewHolder();
+            holder = new GroupViewHolder();
             holder.ivGroupThumb = (ImageView) convertView.findViewById(R.id.iv_group_thumb);
             holder.tvGroupName = (TextView) convertView.findViewById(R.id.tv_group_name);
-            holder.ivIndIcator = (ImageView) convertView.findViewById(R.id.iv_indicator);
+            holder.ivIndicator = (ImageView) convertView.findViewById(R.id.iv_indicator);
+            convertView.setTag(holder);
         } else {
-            holder=(GropViewHolder) convertView.getTag();
+            holder=(GroupViewHolder) convertView.getTag();
         }
         CategoryGroupBean group = getGroup(groupPosition);
         ImageUtils.setGroupCategoryImage(mContext, holder.ivGroupThumb, group.getImageUrl());
         holder.tvGroupName.setText(group.getName());
         if (isExpanded) {
-            holder.ivIndIcator.setImageResource(R.drawable.expand_off);
+            holder.ivIndicator.setImageResource(R.drawable.expand_off);
         } else {
-            holder.ivIndIcator.setImageResource(R.drawable.expand_on);
+            holder.ivIndicator.setImageResource(R.drawable.expand_on);
         }
-        convertView.setTag(holder);
         return convertView;
     }
 
@@ -105,6 +105,7 @@ public class CategoryAdapter extends BaseExpandableListAdapter {
             holder.LayoutCategoryChild = (RelativeLayout) convertView.findViewById(R.id.layout_category_child);
             holder.ivCategoryChildThumb = (ImageView) convertView.findViewById(R.id.iv_category_child_thumb);
             holder.tvCategoryChildName = (TextView) convertView.findViewById(R.id.tv_category_child_name);
+            convertView.setTag(holder);
         } else {
             holder = (ChildViewHolder) convertView.getTag();
         }
@@ -121,10 +122,10 @@ public class CategoryAdapter extends BaseExpandableListAdapter {
         return false;
     }
 
-    class GropViewHolder{
+    class GroupViewHolder {
         ImageView  ivGroupThumb;
         TextView  tvGroupName;
-        ImageView ivIndIcator;
+        ImageView ivIndicator;
     }
 
     class ChildViewHolder{
