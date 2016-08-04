@@ -30,6 +30,8 @@ public class CategoryFragment extends Fragment {
     List<CategoryGroupBean> mGroupList;
     List<ArrayList<CategoryChildBean>> mChildList;
     CategoryAdapter mAdapter;
+
+    int groupCount;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -53,25 +55,11 @@ public class CategoryFragment extends Fragment {
                     if (groupList != null) {
                         Log.e(TAG, "groupList=" + groupList.size());
                         mGroupList = groupList;
+                        int i = 0;
                         for (CategoryGroupBean g : groupList) {
-                            findCategoryChildList(new OkHttpUtils2.OnCompleteListener<CategoryChildBean[]>() {
-                                @Override
-                                public void onSuccess(CategoryChildBean[] result) {
-                                    Log.e(TAG, "result=" + result);
-                                    if (result != null) {
-                                        ArrayList<CategoryChildBean> childList = Utils.array2List(result);
-                                        Log.e(TAG, "childList=" + childList.size());
-                                        mChildList.add(childList);
-                                        mAdapter.notifyDataSetChanged();
-
-                                    }
-                                }
-
-                                @Override
-                                public void onError(String error) {
-                                    Log.e(TAG, "error=" + error);
-                                }
-                            },g.getId());
+                            mChildList.add(new ArrayList<CategoryChildBean>());
+                            findCategoryChildList(g.getId(),i);
+                            i++;
                         }
                     }
                 }
@@ -79,19 +67,39 @@ public class CategoryFragment extends Fragment {
 
             @Override
             public void onError(String error) {
-                Log.e(TAG, "error=" + error);
+                Log.e(TAG, "group,error=" + error);
             }
         });
     }
 
-    private void findCategoryChildList(OkHttpUtils2.OnCompleteListener<CategoryChildBean[]> listener, int parentId){
-        OkHttpUtils2<CategoryChildBean[]> utils2 = new OkHttpUtils2<CategoryChildBean[]>();
+    private void findCategoryChildList(int parentId,final int index){
+        final OkHttpUtils2<CategoryChildBean[]> utils2 = new OkHttpUtils2<CategoryChildBean[]>();
         utils2.setRequestUrl(I.REQUEST_FIND_CATEGORY_CHILDREN)
                 .addParam(I.CategoryChild.PARENT_ID,String.valueOf(parentId))
                 .addParam(I.PAGE_ID,String.valueOf(I.PAGE_ID_DEFAULT))
                 .addParam(I.PAGE_SIZE,String.valueOf(I.PAGE_SIZE_DEFAULT))
                 .targetClass(CategoryChildBean[].class)
-                .execute(listener);
+                .execute(new OkHttpUtils2.OnCompleteListener<CategoryChildBean[]>() {
+                    @Override
+                    public void onSuccess(CategoryChildBean[] result) {
+                        groupCount++;
+                        Log.e(TAG, "result=" + result);
+                        if (result != null) {
+                            ArrayList<CategoryChildBean> childlist = utils2.array2List(result);
+                            if (childlist != null) {
+                                mChildList.set(index, childlist);
+                            }
+                        }
+                        if (groupCount == mGroupList.size()) {
+                            mAdapter.addAll(mGroupList,mChildList);
+                        }
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        Log.e(TAG, "child,error=" + error);
+                    }
+                });
 
     }
 
