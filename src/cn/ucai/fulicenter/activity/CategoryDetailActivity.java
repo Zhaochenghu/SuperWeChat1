@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -36,6 +37,12 @@ public class CategoryDetailActivity extends BaseActivity{
     int pageId = 0;
     int action = I.ACTION_DOWNLOAD;
     TextView tvHint;
+
+    Button btnSortPrice;
+    Button btnSortAddTime;
+    boolean mSortPriceAsc;
+    boolean mSortAddTimeAsc;
+    int sortBy;
     int catId = 0;
     @Override
     protected void onCreate(Bundle arg0) {
@@ -43,6 +50,7 @@ public class CategoryDetailActivity extends BaseActivity{
         mContext = this;
         setContentView(R.layout.activity_category_child);
         mGoodList = new ArrayList<NewGoodBean>();
+        sortBy = I.SORT_BY_ADDTIME_DESC;
         initView();
         initData();
         setListener();
@@ -51,6 +59,9 @@ public class CategoryDetailActivity extends BaseActivity{
     private void setListener() {
         setPullDownRefreshListener();
         setPullUpRefreshListener();
+        SortStatusChangedListener listener = new SortStatusChangedListener();
+        btnSortPrice.setOnClickListener(listener);
+        btnSortAddTime.setOnClickListener(listener);
     }
 
     private void setPullUpRefreshListener() {
@@ -145,7 +156,7 @@ public class CategoryDetailActivity extends BaseActivity{
     private void findBoutiqueDetailList(OkHttpUtils2.OnCompleteListener<NewGoodBean[]> listener)
     throws Exception{
         OkHttpUtils2<NewGoodBean[]> utils = new OkHttpUtils2<NewGoodBean[]>();
-        utils.setRequestUrl(I.REQUEST_FIND_NEW_BOUTIQUE_GOODS)
+        utils.setRequestUrl(I.REQUEST_FIND_GOODS_DETAILS)
                 .addParam(I.NewAndBoutiqueGood.CAT_ID,String.valueOf(catId))
                 .addParam(I.PAGE_ID,String.valueOf(pageId))
                 .addParam(I.PAGE_SIZE,String.valueOf(I.PAGE_SIZE_DEFAULT))
@@ -154,8 +165,8 @@ public class CategoryDetailActivity extends BaseActivity{
     }
 
     private void initView() {
-        /*String name = getIntent().getStringExtra(D.Boutique.KEY_NAME);
-        DisplayUtils.initBackWithTitle(mContext,name);*/
+        //String name = getIntent().getStringExtra(D.Boutique.KEY_NAME);
+        DisplayUtils.initBack(mContext);
         mSwipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.srl_new_category);
         mSwipeRefreshLayout.setColorSchemeColors(
                 R.color.google_blue,
@@ -166,9 +177,38 @@ public class CategoryDetailActivity extends BaseActivity{
         mGridLayoutManager = new GridLayoutManager(mContext, I.COLUM_NUM);
         mGridLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView = (RecyclerView)findViewById(R.id.rv_new_category);
+        mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(mGridLayoutManager);
         mAdapter = new GoodAdapter(mContext,mGoodList);
         mRecyclerView.setAdapter(mAdapter);
         tvHint = (TextView)findViewById(R.id.tv_refresh_hint);
+        btnSortPrice = (Button) findViewById(R.id.btn_sort_price);
+        btnSortAddTime = (Button) findViewById(R.id.btn_sort_addtime);
     }
+
+    class SortStatusChangedListener implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+            switch (view.getId()) {
+                case R.id.btn_sort_price:
+                    if (mSortPriceAsc) {
+                        sortBy = I.SORT_BY_ADDTIME_ASC;
+                    } else {
+                        sortBy = I.SORT_BY_ADDTIME_DESC;
+                    }
+                    mSortPriceAsc = !mSortPriceAsc;
+                    break;
+                case R.id.btn_sort_addtime:
+                    if (mSortAddTimeAsc) {
+                        sortBy = I.SORT_BY_ADDTIME_ASC;
+                    } else {
+                        sortBy = I.SORT_BY_ADDTIME_DESC;
+                    }
+                    mSortAddTimeAsc = !mSortAddTimeAsc;
+                    break;
+            }
+            mAdapter.setSortBy(sortBy);
+        }
+    }
+
 }

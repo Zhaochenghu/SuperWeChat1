@@ -23,7 +23,17 @@ public class PropertiesBean implements Serializable {
     private String colorName;
     private String colorCode;
     private String colorImg;
+    private String colorUrl;
+
     private AlbumsBean[] albums;
+
+    public String getColorUrl() {
+        return colorUrl;
+    }
+
+    public void setColorUrl(String colorUrl) {
+        this.colorUrl = colorUrl;
+    }
 
     public AlbumsBean[] getAlbums() {
         return albums;
@@ -90,7 +100,9 @@ public class PropertiesBean implements Serializable {
                 ", colorName='" + colorName + '\'' +
                 ", colorCode='" + colorCode + '\'' +
                 ", colorImg='" + colorImg + '\'' +
+                ", colorUrl='" + colorUrl + '\'' +
                 ", albums=" + Arrays.toString(albums) +
                 '}';
     }
+
 }
