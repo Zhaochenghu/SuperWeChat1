@@ -6,43 +6,18 @@
     android:orientation="vertical"
     android:id="@+id/layout_register">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_weight="1" >
-
-        <ImageView
-            android:id="@+id/weixin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerInParent="true"
-            android:src="@drawable/mobile"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="130dp"/>
-        <TextView
-            android:textSize="20dp"
-            android:layout_toRightOf="@id/weixin"
-            android:layout_centerVertical="true"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="超级微信"
-            android:textColor="#000"/>
-    </RelativeLayout>
+    <include layout="@layout/common_head_white" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dip"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
         android:layout_weight="5"
+        android:layout_marginTop="15dp"
         android:orientation="vertical" >
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="54dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
             android:background="#fff" >
 
             <ImageView
@@ -69,8 +44,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="54dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
+
             android:background="#fff" >
 
             <ImageView
@@ -97,9 +71,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="54dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:background="#fff" >
 
             <ImageView
@@ -121,16 +93,13 @@
                 android:hint="@string/password"
                 android:inputType="textPassword"
                 android:paddingLeft="10dip"
-                android:singleLine="true"
                 android:textSize="18sp" />
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="54dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:background="#fff" >
 
             <ImageView
@@ -161,8 +130,6 @@
             android:id="@+id/layout_register_avatar"
             android:layout_width="match_parent"
             android:layout_height="54dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
             android:background="#fff" >
 
             <ImageView
@@ -195,21 +162,6 @@
             android:orientation="horizontal" >
 
             <Button
-                android:id="@+id/btn_login"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginTop="10dp"
-                android:background="#fff"
-                android:onClick="register"
-                android:paddingBottom="7dp"
-                android:paddingTop="7dp"
-                android:text="@string/login"
-                android:textColor="@android:color/background_dark"
-                android:textSize="20sp" />
-            <Button
                 android:id="@+id/btn_register"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -217,7 +169,7 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/button_login_bg"
+                android:background="@color/google_green"
                 android:paddingBottom="7dp"
                 android:paddingTop="7dp"
                 android:text="@string/register"
