@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Created by Administrator on 2016/7/29.
  */
-public class CategoryGroupBean implements Serializable{
+public class CategoryParentBean implements Serializable{
 
     /**
      * id : 334

@@ -1,6 +1,7 @@
 package cn.ucai.fulicenter.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
@@ -11,9 +12,11 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.ucai.fulicenter.I;
 import cn.ucai.fulicenter.R;
+import cn.ucai.fulicenter.activity.CategoryDetailActivity;
 import cn.ucai.fulicenter.bean.CategoryChildBean;
-import cn.ucai.fulicenter.bean.CategoryGroupBean;
+import cn.ucai.fulicenter.bean.CategoryParentBean;
 import cn.ucai.fulicenter.utils.ImageUtils;
 
 /**
@@ -21,14 +24,14 @@ import cn.ucai.fulicenter.utils.ImageUtils;
  */
 public class CategoryAdapter extends BaseExpandableListAdapter {
     Context  mContext;
-    List<CategoryGroupBean> mGroupList;
+    List<CategoryParentBean> mGroupList;
     List<ArrayList<CategoryChildBean>> mChildList;
 
     public CategoryAdapter(Context mContext,
-                           List<CategoryGroupBean> mGroupList,
+                           List<CategoryParentBean> mGroupList,
                            List<ArrayList<CategoryChildBean>> mChildList) {
         this.mContext = mContext;
-        this.mGroupList = new ArrayList<CategoryGroupBean>();
+        this.mGroupList = new ArrayList<CategoryParentBean>();
         this.mGroupList.addAll(mGroupList);
         this.mChildList = new ArrayList<ArrayList<CategoryChildBean>>();
         this.mChildList.addAll(mChildList);
@@ -44,7 +47,7 @@ public class CategoryAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public CategoryGroupBean getGroup(int groupPosition) {
+    public CategoryParentBean getGroup(int groupPosition) {
         if (mGroupList!=null) return mGroupList.get(groupPosition);
         return null;
     }
@@ -85,7 +88,7 @@ public class CategoryAdapter extends BaseExpandableListAdapter {
         } else {
             holder=(GroupViewHolder) convertView.getTag();
         }
-        CategoryGroupBean group = getGroup(groupPosition);
+        CategoryParentBean group = getGroup(groupPosition);
         ImageUtils.setGroupCategoryImage(mContext, holder.ivGroupThumb, group.getImageUrl());
         holder.tvGroupName.setText(group.getName());
         if (isExpanded) {
@@ -109,10 +112,17 @@ public class CategoryAdapter extends BaseExpandableListAdapter {
         } else {
             holder = (ChildViewHolder) convertView.getTag();
         }
-        CategoryChildBean child = getChild(groupPosition, childPosition);
+        final CategoryChildBean child = getChild(groupPosition, childPosition);
         if (child != null) {
             ImageUtils.setChildCategoryImage(mContext, holder.ivCategoryChildThumb, child.getImageUrl());
             holder.tvCategoryChildName.setText(child.getName());
+            holder.LayoutCategoryChild.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mContext.startActivity(new Intent(mContext, CategoryDetailActivity.class)
+                    .putExtra(I.NewAndBoutiqueGood.CAT_ID,child.getId()));
+                }
+            });
         }
         return convertView;
     }
@@ -122,7 +132,7 @@ public class CategoryAdapter extends BaseExpandableListAdapter {
         return false;
     }
 
-    public void addAll(List<CategoryGroupBean> mGroupList, List<ArrayList<CategoryChildBean>> mChildList) {
+    public void addAll(List<CategoryParentBean> mGroupList, List<ArrayList<CategoryChildBean>> mChildList) {
         this.mGroupList.clear();
         this.mGroupList.addAll(mGroupList);
         this.mChildList.clear();
