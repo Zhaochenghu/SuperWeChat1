@@ -52,6 +52,7 @@ import cn.ucai.fulicenter.bean.UserAvatar;
 import cn.ucai.fulicenter.data.OkHttpUtils2;
 import cn.ucai.fulicenter.db.UserDao;
 import cn.ucai.fulicenter.domain.User;
+import cn.ucai.fulicenter.task.DownloadCollectCountListTask;
 import cn.ucai.fulicenter.task.DownloadContactListTask;
 import cn.ucai.fulicenter.utils.CommonUtils;
 import cn.ucai.fulicenter.utils.UserUtils;
@@ -267,6 +268,7 @@ public class LoginActivity extends BaseActivity {
 		FuliCenterApplication.currentUserNick = user.getMUserNick();
 
 		new DownloadContactListTask(LoginActivity.this,currentUsername).execute();
+		new DownloadCollectCountListTask(LoginActivity.this,currentUsername).execute();
 
 		try {
 			// ** 第一次登录或者之前logout后再登录，加载所有本地群和回话
@@ -314,21 +316,6 @@ public class LoginActivity extends BaseActivity {
 		newFriends.setNick(strChat);
 
 		userlist.put(Constant.NEW_FRIENDS_USERNAME, newFriends);
-		/*// 添加"群聊"
-		User groupUser = new User();
-		String strGroup = getResources().getString(R.string.group_chat);
-		groupUser.setUsername(Constant.GROUP_USERNAME);
-		groupUser.setNick(strGroup);
-		groupUser.setHeader("");
-		userlist.put(Constant.GROUP_USERNAME, groupUser);*/
-		
-		/*// 添加"Robot"
-		User robotUser = new User();
-		String strRobot = getResources().getString(R.string.robot_chat);
-		robotUser.setUsername(Constant.CHAT_ROBOT);
-		robotUser.setNick(strRobot);
-		robotUser.setHeader("");
-		userlist.put(Constant.CHAT_ROBOT, robotUser);*/
 		
 		// 存入内存
 		((DemoHXSDKHelper) HXSDKHelper.getInstance()).setContactList(userlist);

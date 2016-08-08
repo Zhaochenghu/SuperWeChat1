@@ -125,6 +125,18 @@ public class FuliCenterApplication extends Application {
 	 * 全局当前登录用户的好友MAP集合
 	 */
 	private Map<String, UserAvatar> userMap = new HashMap<String, UserAvatar>();
+	/**
+	 * 全局当前登录用户的收藏商品的数量
+	 */
+	private int collectCount;
+
+	public int getCollectCount() {
+		return collectCount;
+	}
+
+	public void setCollectCount(int collectCount) {
+		this.collectCount = collectCount;
+	}
 
 	/**
 	 * 全局的群组成员集合
