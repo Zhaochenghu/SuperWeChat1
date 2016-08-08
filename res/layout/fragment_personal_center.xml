@@ -8,7 +8,7 @@
         android:id="@+id/center_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginParentTop="true"
+        android:layout_alignParentTop="true"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
         android:background="@color/personal_center_top_bg">
