@@ -65,6 +65,7 @@ public class PersonalCenterFragment extends Fragment {
         MyClickListener listener = new MyClickListener();
         mtvSettings.setOnClickListener(listener);
         layoutUserCenter.setOnClickListener(listener);
+        layoutCollect.setOnClickListener(listener);
         upateCollectCountListener();
     }
 
@@ -78,6 +79,8 @@ public class PersonalCenterFragment extends Fragment {
                     case R.id.center_user_info:
                         startActivity(new Intent(mContext, SettingsActivity.class));
                         break;
+                    case R.id.layout_center_collect:
+                        startActivity(new Intent(mContext,CollectActivity.class));
                 }
             } else {
                 Log.e(TAG, "not logined...");
@@ -92,7 +95,7 @@ public class PersonalCenterFragment extends Fragment {
         mivMSG = (ImageView) layout.findViewById(R.id.iv_persona_center_msg);
         mtvCollectCount = (TextView) layout.findViewById(R.id.tv_collect_count);
         layoutUserCenter = (RelativeLayout) layout.findViewById(R.id.center_user_info);
-        layoutCollect = (LinearLayout) layout.findViewById(R.id.ivCollect);
+        layoutCollect = (LinearLayout) layout.findViewById(R.id.layout_center_collect);
         initOrderList(layout);
     }
 
