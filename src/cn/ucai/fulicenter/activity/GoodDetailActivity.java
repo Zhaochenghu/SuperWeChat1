@@ -202,6 +202,7 @@ public class GoodDetailActivity extends BaseActivity {
                                                      if (result != null && result.isSuccess()) {
                                                          isCollect = false;
                                                          new DownloadCollectCountListTask(mContext, FuliCenterApplication.getInstance().getUserName());
+                                                         sendStickyBroadcast(new Intent("update_collect_list"));
                                                      } else {
                                                          Log.e(TAG, "delete fail");
                                                      }
@@ -216,6 +217,36 @@ public class GoodDetailActivity extends BaseActivity {
                                              });
                 } else {
                     //添加收藏
+                    OkHttpUtils2<MessageBean> utils = new OkHttpUtils2<MessageBean>();
+                    utils.setRequestUrl(I.REQUEST_ADD_COLLECT)
+                            .addParam(I.Collect.USER_NAME,FuliCenterApplication.getInstance().getUserName())
+                            .addParam(I.Collect.GOODS_ID,String.valueOf(mGoodDetail.getGoodsId()))
+                            .addParam(I.Collect.ADD_TIME,String.valueOf(mGoodDetail.getAddTime()))
+                            .addParam(I.Collect.GOODS_ENGLISH_NAME,mGoodDetail.getGoodsEnglishName())
+                            .addParam(I.Collect.GOODS_IMG,mGoodDetail.getGoodsImg())
+                            .addParam(I.Collect.GOODS_THUMB,mGoodDetail.getGoodsThumb())
+                            .addParam(I.Collect.GOODS_NAME,mGoodDetail.getGoodsName())
+                            .targetClass(MessageBean.class)
+                            .execute(new OkHttpUtils2.OnCompleteListener<MessageBean>() {
+                                @Override
+                                public void onSuccess(MessageBean result) {
+                                    Log.e(TAG, "result=" + result);
+                                    if (result != null && result.isSuccess()) {
+                                        isCollect = true;
+                                        new DownloadCollectCountListTask(mContext, FuliCenterApplication.getInstance().getUserName());
+                                        sendStickyBroadcast(new Intent("update_collect_list"));
+                                    } else {
+                                        Log.e(TAG, "delete fail");
+                                    }
+                                    updateCollectStatus();
+                                    Toast.makeText(mContext, result.getMsg(), Toast.LENGTH_LONG).show();
+                                }
+
+                                @Override
+                                public void onError(String error) {
+                                    Log.e(TAG, "error=" + error);
+                                }
+                            });
                 }
             } else {
                 startActivity(new Intent(mContext,LoginActivity.class));
