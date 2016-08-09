@@ -9,10 +9,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import cn.ucai.fulicenter.D;
+import cn.ucai.fulicenter.DemoHXSDKHelper;
+import cn.ucai.fulicenter.FuliCenterApplication;
 import cn.ucai.fulicenter.I;
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.bean.AlbumsBean;
 import cn.ucai.fulicenter.bean.GoodDetailsBean;
+import cn.ucai.fulicenter.bean.MessageBean;
 import cn.ucai.fulicenter.data.OkHttpUtils2;
 import cn.ucai.fulicenter.utils.ImageUtils;
 import cn.ucai.fulicenter.view.DisplayUtils;
@@ -37,7 +40,7 @@ public class GoodDetailActivity extends BaseActivity {
     SlideAutoLoopView mSlideAutoLoopView;
     FlowIndicator mFlowIndicator;
     WebView wvGoodBrief;
-    //GoodDetailsBean mGoodDetail;
+    GoodDetailsBean mGoodDetail;
     int mGoodId;
     @Override
     protected void onCreate(Bundle arg0) {
@@ -55,7 +58,11 @@ public class GoodDetailActivity extends BaseActivity {
             getGoodDetailsByGoodId(new OkHttpUtils2.OnCompleteListener<GoodDetailsBean>() {
                 @Override
                 public void onSuccess(GoodDetailsBean result) {
-                    showGoodDetails(result);
+                    Log.e(TAG, "result=" + result);
+                    if (result != null) {
+                        mGoodDetail = result;
+                        showGoodDetails();
+                    }
                 }
 
                 @Override
@@ -72,14 +79,14 @@ public class GoodDetailActivity extends BaseActivity {
 
     }
 
-    private void showGoodDetails(GoodDetailsBean details) {
-        tvGoodEnglishName.setText(details.getGoodsEnglishName());
-        tvGoodName.setText(details.getGoodsName());
-        tvGoodPriceCurrent.setText(details.getCurrencyPrice());
-        tvGoodPriceShop.setText(details.getShopPrice());
-        mSlideAutoLoopView.startPlayLoop(mFlowIndicator, getAlbumImageUrl(details),
-                getAlbumImageSize(details));
-        wvGoodBrief.loadDataWithBaseURL(null, details.getGoodsBrief(), D.TEXT_HTML, D.UTF_8, null);
+    private void showGoodDetails() {
+        tvGoodEnglishName.setText(mGoodDetail.getGoodsEnglishName());
+        tvGoodName.setText(mGoodDetail.getGoodsName());
+        tvGoodPriceCurrent.setText(mGoodDetail.getCurrencyPrice());
+        tvGoodPriceShop.setText(mGoodDetail.getShopPrice());
+        mSlideAutoLoopView.startPlayLoop(mFlowIndicator, getAlbumImageUrl(mGoodDetail),
+                getAlbumImageSize(mGoodDetail));
+        wvGoodBrief.loadDataWithBaseURL(null, mGoodDetail.getGoodsBrief(), D.TEXT_HTML, D.UTF_8, null);
     }
 
     private String[] getAlbumImageUrl(GoodDetailsBean details) {
@@ -125,5 +132,37 @@ public class GoodDetailActivity extends BaseActivity {
         WebSettings settings = wvGoodBrief.getSettings();
         settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
         settings.setBuiltInZoomControls(true);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initCollecStatus();
+    }
+
+    private void initCollecStatus(){
+        if (DemoHXSDKHelper.getInstance().isLogined()) {
+            String userName = FuliCenterApplication.getInstance().getUserName();
+            OkHttpUtils2<MessageBean> utils = new OkHttpUtils2<MessageBean>();
+            utils.setRequestUrl(I.REQUEST_IS_COLLECT)
+                    .addParam(I.Collect.USER_NAME,userName)
+                    .addParam(I.Collect.GOODS_ID,String.valueOf(mGoodId))
+                    .targetClass(MessageBean.class)
+                    .execute(new OkHttpUtils2.OnCompleteListener<MessageBean>() {
+                        @Override
+                        public void onSuccess(MessageBean result) {
+                            if (result != null && result.isSuccess()) {
+                                Log.e(TAG, "result=" + result);
+                                ivCollect.setImageResource(R.drawable.bg_collect_out);
+                            } else {
+                                ivCollect.setImageResource(R.drawable.bg_collect_in);
+                            }
+                        }
+                        @Override
+                        public void onError(String error) {
+                            Log.e(TAG, "error=" + error);
+                        }
+                    });
+        }
     }
 }
