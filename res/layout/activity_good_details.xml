@@ -20,7 +20,7 @@
             android:padding="5dp"
             android:src="@drawable/selector_share_bg"/>
         <ImageView
-            android:id="@+id/ivCollect"
+            android:id="@+id/iv_good_collect"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -31,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/ivCollect"
+            android:layout_toLeftOf="@id/iv_good_collect"
             android:padding="5dp">
             <ImageView
                 android:id="@+id/ivAddCart"

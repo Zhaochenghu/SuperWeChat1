@@ -1,7 +1,9 @@
 package cn.ucai.fulicenter.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ImageView;
@@ -17,7 +19,7 @@ import cn.ucai.fulicenter.bean.AlbumsBean;
 import cn.ucai.fulicenter.bean.GoodDetailsBean;
 import cn.ucai.fulicenter.bean.MessageBean;
 import cn.ucai.fulicenter.data.OkHttpUtils2;
-import cn.ucai.fulicenter.utils.ImageUtils;
+import cn.ucai.fulicenter.task.DownloadCollectCountListTask;
 import cn.ucai.fulicenter.view.DisplayUtils;
 import cn.ucai.fulicenter.view.FlowIndicator;
 import cn.ucai.fulicenter.view.SlideAutoLoopView;
@@ -42,6 +44,7 @@ public class GoodDetailActivity extends BaseActivity {
     WebView wvGoodBrief;
     GoodDetailsBean mGoodDetail;
     int mGoodId;
+    boolean isCollect;
     @Override
     protected void onCreate(Bundle arg0) {
         super.onCreate(arg0);
@@ -49,6 +52,12 @@ public class GoodDetailActivity extends BaseActivity {
         setContentView(R.layout.activity_good_details);
         initView();
         initDate();
+        setListener();
+    }
+
+    private void setListener() {
+        MyOnClickListener listener = new MyOnClickListener();
+        ivCollect.setOnClickListener(listener);
     }
 
     private void initDate() {
@@ -119,7 +128,7 @@ public class GoodDetailActivity extends BaseActivity {
     private void initView() {
         DisplayUtils.initBack(mContext);
         ivShare = (ImageView) findViewById(R.id.ivShare);
-        ivCollect = (ImageView) findViewById(R.id.ivCollect);
+        ivCollect = (ImageView) findViewById(R.id.iv_good_collect);
         ivCart = (ImageView) findViewById(R.id.ivAddCart);
         tvCartCount = (TextView) findViewById(R.id.tvCartCount);
         tvGoodEnglishName = (TextView) findViewById(R.id.tvGoodEnglishName);
@@ -151,18 +160,74 @@ public class GoodDetailActivity extends BaseActivity {
                     .execute(new OkHttpUtils2.OnCompleteListener<MessageBean>() {
                         @Override
                         public void onSuccess(MessageBean result) {
+                            Log.e(TAG, "result=" + result);
                             if (result != null && result.isSuccess()) {
-                                Log.e(TAG, "result=" + result);
-                                ivCollect.setImageResource(R.drawable.bg_collect_out);
+                                isCollect = true;
                             } else {
-                                ivCollect.setImageResource(R.drawable.bg_collect_in);
+                                isCollect = false;
                             }
+                            updateCollectStatus();
                         }
                         @Override
                         public void onError(String error) {
                             Log.e(TAG, "error=" + error);
                         }
                     });
+        }
+    }
+
+    class MyOnClickListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View view) {
+            switch (view.getId()) {
+                case R.id.iv_good_collect:
+                    goodColect();
+                    break;
+            }
+        }
+//取消或者添加商品收藏
+        private void goodColect() {
+            if (DemoHXSDKHelper.getInstance().isLogined()) {
+                if (isCollect) {
+                    //取消收藏
+                    OkHttpUtils2<MessageBean> utils = new OkHttpUtils2<MessageBean>();
+                    utils.setRequestUrl(I.REQUEST_DELETE_COLLECT)
+                            .addParam(I.Collect.USER_NAME, FuliCenterApplication.getInstance().getUserName())
+                            .addParam(I.Collect.GOODS_ID, String.valueOf(mGoodId))
+                            .targetClass(MessageBean.class)
+                            .execute(new OkHttpUtils2.OnCompleteListener<MessageBean>() {
+                                                 @Override
+                                                 public void onSuccess(MessageBean result) {
+                                                     if (result != null && result.isSuccess()) {
+                                                         isCollect = false;
+                                                         new DownloadCollectCountListTask(mContext, FuliCenterApplication.getInstance().getUserName());
+                                                     } else {
+                                                         Log.e(TAG, "delete fail");
+                                                     }
+                                                     updateCollectStatus();
+                                                     Toast.makeText(mContext, result.getMsg(), Toast.LENGTH_LONG).show();
+                                                 }
+
+                                                 @Override
+                                                 public void onError(String error) {
+                                                     Log.e(TAG, "error=" + error);
+                                                 }
+                                             });
+                } else {
+                    //添加收藏
+                }
+            } else {
+                startActivity(new Intent(mContext,LoginActivity.class));
+            }
+        }
+    }
+
+    private void updateCollectStatus() {
+        if (isCollect) {
+            ivCollect.setImageResource(R.drawable.bg_collect_out);
+        } else {
+            ivCollect.setImageResource(R.drawable.bg_collect_in);
         }
     }
 }
