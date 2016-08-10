@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
-import cn.ucai.fulicenter.BoutiqueFragment;
 import cn.ucai.fulicenter.DemoHXSDKHelper;
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.utils.Utils;
@@ -37,6 +36,7 @@ public class FuliCenterMainActivity extends BaseActivity{
     BoutiqueFragment mBoutiqueFragment;
     CategoryFragment mCategoryFragment;
     PersonalCenterFragment  mPersonalCenterFragment;
+    CartFragment mCartFragment;
     private Fragment[] fragments;
 
     private int currentTabIndex;
@@ -55,8 +55,9 @@ public class FuliCenterMainActivity extends BaseActivity{
                 .add(R.id.fragment_container,mBoutiqueFragment)
                 .add(R.id.fragment_container,mCategoryFragment)
                 .add(R.id.fragment_container,mPersonalCenterFragment)
+                .add(R.id.fragment_container,mCartFragment)
                 .hide(mBoutiqueFragment).hide(mCategoryFragment)
-                .hide(mPersonalCenterFragment)
+                .hide(mPersonalCenterFragment).hide(mCartFragment)
                 .show(mNewGoodFragment)
                 .commit();
     }
@@ -85,10 +86,12 @@ public class FuliCenterMainActivity extends BaseActivity{
         mBoutiqueFragment = new BoutiqueFragment();
         mCategoryFragment = new CategoryFragment();
         mPersonalCenterFragment = new PersonalCenterFragment();
+        mCartFragment = new CartFragment();
         fragments = new Fragment[5];
         fragments[0] = mNewGoodFragment;
         fragments[1] = mBoutiqueFragment;
         fragments[2] = mCategoryFragment;
+        fragments[3] = mCartFragment;
         fragments[4] = mPersonalCenterFragment;
     }
 
@@ -166,6 +169,7 @@ public class FuliCenterMainActivity extends BaseActivity{
         }
         setFragment();
         setRadioButtonStatus(currentIndex);
+        updateCartNum();
     }
 
     class updateCartNumReceiver extends BroadcastReceiver {
