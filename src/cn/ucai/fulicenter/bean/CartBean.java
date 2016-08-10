@@ -8,7 +8,7 @@ import java.io.Serializable;
 /**
  * Created by Administrator on 2016/7/29.
  */
-public class CartBean implements Serializable {
+public class  CartBean implements Serializable {
 
     /**
      * id : 7672
@@ -73,6 +73,22 @@ public class CartBean implements Serializable {
 
     public void setGoods(GoodDetailsBean goods) {
         this.goods = goods;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CartBean)) return false;
+
+        CartBean cartBean = (CartBean) o;
+
+        return getId() == cartBean.getId();
+
+    }
+
+    @Override
+    public int hashCode() {
+        return getId();
     }
 
     @Override
