@@ -121,11 +121,13 @@ public class CartFragment extends Fragment{
                 mCartAdapter.setMore(false);
             }
             tvNothing.setVisibility(View.GONE);
-            sumPrice();
+            mSwipeRefreshLayout.setVisibility(View.VISIBLE);
         } else {
             mCartAdapter.setMore(false);
             tvNothing.setVisibility(View.VISIBLE);
+            mSwipeRefreshLayout.setVisibility(View.GONE);
         }
+        sumPrice();
     }
     private void initView(View layout) {
         mSwipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.srl_cart);
@@ -158,6 +160,7 @@ public class CartFragment extends Fragment{
     private void setUpdateCartListener(){
         mUpdateCartReceiver = new UpdateCartReceiver();
         IntentFilter filter = new IntentFilter("update_cart_list");
+        filter.addAction("update_user");
         mContext.registerReceiver(mUpdateCartReceiver, filter);
     }
 
