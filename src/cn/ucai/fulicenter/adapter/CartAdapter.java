@@ -89,7 +89,7 @@ public class CartAdapter extends RecyclerView.Adapter<ViewHolder>{
         TextView tvCartJag;
         public GartViewHolder(View itemView) {
             super(itemView);
-            layout = (RelativeLayout) itemView.findViewById(R.id.layout_cart);
+            layout = (RelativeLayout) itemView.findViewById(R.id.layout_cart_Lin);
             cbCart = (CheckBox) itemView.findViewById(R.id.item_cart_cb);
             ivImageCartThumb = (ImageView) itemView.findViewById(R.id.image_cart_thumb);
             tvCartName = (TextView) itemView.findViewById(R.id.text_cart_name);
