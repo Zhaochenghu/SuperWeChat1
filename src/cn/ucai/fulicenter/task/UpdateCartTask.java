@@ -2,6 +2,7 @@ package cn.ucai.fulicenter.task;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.NavUtils;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -49,9 +50,38 @@ public class UpdateCartTask {
                 });
             } else {
                 //刪除購物車數據
+                deleteCart(new OkHttpUtils2.OnCompleteListener<MessageBean>() {
+                    @Override
+                    public void onSuccess(MessageBean result) {
+                        if (result != null && result.isSuccess()) {
+                            cartList.remove(cartList.indexOf(mCart));
+                            mContext.sendStickyBroadcast(new Intent("update_cart_list"));
+                        }
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        Log.e(TAG, "error=" + error);
+                    }
+                });
             }
         } else {
          //新增購物車數據
+            addCart(new OkHttpUtils2.OnCompleteListener<MessageBean>() {
+                @Override
+                public void onSuccess(MessageBean result) {
+                    if (result != null && result.isSuccess()) {
+                        mCart.setId(Integer.valueOf(result.getMsg()));
+                        cartList.add(mCart);
+                        mContext.sendStickyBroadcast(new Intent("update_cart_list"));
+                    }
+                }
+
+                @Override
+                public void onError(String error) {
+                    Log.e(TAG, "error=" + error);
+                }
+            });
         }
     }
 
@@ -61,6 +91,23 @@ public class UpdateCartTask {
                 .addParam(I.Cart.ID,String.valueOf(mCart.getId()))
                 .addParam(I.Cart.COUNT,String.valueOf(mCart.getCount()))
                 .addParam(I.Cart.IS_CHECKED,String.valueOf(mCart.isChecked()))
+                .targetClass(MessageBean.class)
+                .execute(listener);
+    }
+    private void deleteCart(OkHttpUtils2.OnCompleteListener<MessageBean> listener){
+        OkHttpUtils2<MessageBean> utils2 = new OkHttpUtils2<MessageBean>();
+        utils2.setRequestUrl(I.REQUEST_DELETE_CART)
+                .addParam(I.Cart.ID,String.valueOf(mCart.getId()))
+                .targetClass(MessageBean.class)
+                .execute(listener);
+    }
+    private void addCart(OkHttpUtils2.OnCompleteListener<MessageBean> listener){
+        OkHttpUtils2<MessageBean> utils2 = new OkHttpUtils2<MessageBean>();
+        utils2.setRequestUrl(I.REQUEST_ADD_CART)
+                .addParam(I.Cart.GOODS_ID,String.valueOf(mCart.getGoods().getGoodsId()))
+                .addParam(I.Cart.COUNT,String.valueOf(mCart.getCount()))
+                .addParam(I.Cart.IS_CHECKED,String.valueOf(mCart.isChecked()))
+                .addParam(I.Cart.USER_NAME,FuliCenterApplication.getInstance().getUserName())
                 .targetClass(MessageBean.class)
                 .execute(listener);
     }

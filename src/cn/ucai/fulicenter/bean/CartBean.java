@@ -19,7 +19,7 @@ public class  CartBean implements Serializable {
      * goods : GoodDetailsBean
      */
 
-    private int id;
+    private int id=0;
     private String userName;
     private int goodsId;
     private int count;

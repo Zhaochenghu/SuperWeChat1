@@ -26,7 +26,7 @@ import cn.ucai.fulicenter.utils.ImageUtils;
 public class CartAdapter extends RecyclerView.Adapter<ViewHolder>{
     Context mContext;
     List<CartBean> mCartList;
-    GartViewHolder mGartViewHolder;
+    CartViewHolder mCartViewHolder;
     boolean isMore;
     public CartAdapter(Context context, List<CartBean> list) {
         mContext = context;
@@ -45,29 +45,31 @@ public class CartAdapter extends RecyclerView.Adapter<ViewHolder>{
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        ViewHolder holder = new GartViewHolder(inflater.inflate(R.layout.item_cart, parent, false));
+        ViewHolder holder = new CartViewHolder(inflater.inflate(R.layout.item_cart, parent, false));
         return holder;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        if (holder instanceof GartViewHolder) {
-            mGartViewHolder = (GartViewHolder) holder;
+        if (holder instanceof CartViewHolder) {
+            mCartViewHolder = (CartViewHolder) holder;
             final CartBean cart = mCartList.get(position);
-            mGartViewHolder.cbCart.setChecked(cart.isChecked());
+            mCartViewHolder.cbCart.setChecked(cart.isChecked());
             if (cart.getGoods() != null) {
-                ImageUtils.setGoodImage(mContext, mGartViewHolder.ivImageCartThumb, cart.getGoods().getGoodsThumb());
-                mGartViewHolder.tvCartName.setText(cart.getGoods().getGoodsName());
-                mGartViewHolder.tvCartNum.setText("("+cart.getCount()+")");
-                mGartViewHolder.tvCartJag.setText(cart.getGoods().getCurrencyPrice());
+                ImageUtils.setGoodImage(mContext, mCartViewHolder.ivImageCartThumb, cart.getGoods().getGoodsThumb());
+                mCartViewHolder.tvCartName.setText(cart.getGoods().getGoodsName());
+                mCartViewHolder.tvCartNum.setText("("+cart.getCount()+")");
+                mCartViewHolder.tvCartJag.setText(cart.getGoods().getCurrencyPrice());
             }
-            mGartViewHolder.cbCart.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            mCartViewHolder.cbCart.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     cart.setChecked(isChecked);
                     new UpdateCartTask(mContext,cart).execute();
                 }
             });
+            mCartViewHolder.ivImageCartAdd.setOnClickListener(new ChangeCountListener(cart,1));
+            mCartViewHolder.ivImageCartDel.setOnClickListener(new ChangeCountListener(cart,-1));
         }
     }
 
@@ -89,7 +91,7 @@ public class CartAdapter extends RecyclerView.Adapter<ViewHolder>{
         notifyDataSetChanged();
     }
 
-    class GartViewHolder extends ViewHolder {
+    class CartViewHolder extends ViewHolder {
         RelativeLayout layout;
         CheckBox cbCart;
         ImageView ivImageCartThumb;
@@ -98,9 +100,9 @@ public class CartAdapter extends RecyclerView.Adapter<ViewHolder>{
         ImageView ivImageCartDel;
         TextView tvCartNum;
         TextView tvCartJag;
-        public GartViewHolder(View itemView) {
+        public CartViewHolder(View itemView) {
             super(itemView);
-            layout = (RelativeLayout) itemView.findViewById(R.id.layout_cart_Lin);
+            /*layout = (RelativeLayout) itemView.findViewById(R.id.layout_cart_Lin);*/
             cbCart = (CheckBox) itemView.findViewById(R.id.item_cart_cb);
             ivImageCartThumb = (ImageView) itemView.findViewById(R.id.image_cart_thumb);
             tvCartName = (TextView) itemView.findViewById(R.id.text_cart_name);
@@ -108,6 +110,21 @@ public class CartAdapter extends RecyclerView.Adapter<ViewHolder>{
             ivImageCartDel = (ImageView) itemView.findViewById(R.id.image_cart_del);
             tvCartNum = (TextView) itemView.findViewById(R.id.text_cart_num);
             tvCartJag = (TextView) itemView.findViewById(R.id.text_cart_jag);
+        }
+    }
+
+    class ChangeCountListener implements View.OnClickListener {
+        CartBean cartBean;
+        int setCount;
+        public ChangeCountListener(CartBean cart,int count){
+            this.cartBean = cart;
+            this.setCount = count;
+        }
+
+        @Override
+        public void onClick(View view) {
+            this.cartBean.setCount(cartBean.getCount()+setCount);
+            new UpdateCartTask(mContext,cartBean).execute();
         }
     }
 
