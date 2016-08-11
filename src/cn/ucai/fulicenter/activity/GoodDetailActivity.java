@@ -1,6 +1,9 @@
 package cn.ucai.fulicenter.activity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -26,6 +29,7 @@ import cn.ucai.fulicenter.bean.MessageBean;
 import cn.ucai.fulicenter.data.OkHttpUtils2;
 import cn.ucai.fulicenter.task.DownloadCollectCountListTask;
 import cn.ucai.fulicenter.task.UpdateCartTask;
+import cn.ucai.fulicenter.utils.Utils;
 import cn.ucai.fulicenter.view.DisplayUtils;
 import cn.ucai.fulicenter.view.FlowIndicator;
 import cn.ucai.fulicenter.view.SlideAutoLoopView;
@@ -51,6 +55,7 @@ public class GoodDetailActivity extends BaseActivity {
     GoodDetailsBean mGoodDetail;
     int mGoodId;
     boolean isCollect;
+    updateCartNumReceiver mReceiver;
     @Override
     protected void onCreate(Bundle arg0) {
         super.onCreate(arg0);
@@ -66,6 +71,7 @@ public class GoodDetailActivity extends BaseActivity {
         ivCollect.setOnClickListener(listener);
         ivShare.setOnClickListener(listener);
         ivCart.setOnClickListener(listener);
+        setUpdateCartCountListener();
     }
 
     private void initDate() {
@@ -155,6 +161,19 @@ public class GoodDetailActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         initCollecStatus();
+        updateCartNum();
+    }
+
+    private void updateCartNum() {
+        int count = Utils.sumCartCount();
+        Log.e(TAG, "count=" + count);
+        if (!DemoHXSDKHelper.getInstance().isLogined() || count == 0) {
+            tvCartCount.setText(String.valueOf(0));
+            tvCartCount.setVisibility(View.GONE);
+        } else {
+            tvCartCount.setText(String.valueOf(count));
+            tvCartCount.setVisibility(View.VISIBLE);
+        }
     }
 
     private void initCollecStatus(){
@@ -185,7 +204,6 @@ public class GoodDetailActivity extends BaseActivity {
     }
 
     class MyOnClickListener implements View.OnClickListener {
-
         @Override
         public void onClick(View view) {
             switch (view.getId()) {
@@ -266,6 +284,7 @@ public class GoodDetailActivity extends BaseActivity {
                 startActivity(new Intent(mContext,LoginActivity.class));
             }
         }
+
     }
 
     private void addCart() {
@@ -274,23 +293,25 @@ public class GoodDetailActivity extends BaseActivity {
         boolean isExits = false;
         for (CartBean cartBean : cartList) {
             if (cartBean.getGoodsId() == mGoodId) {
+                cart.setId(cartBean.getId());
+                cart.setGoodsId(mGoodId);
                 cart.setChecked(cartBean.isChecked());
                 cart.setCount(cartBean.getCount()+1);
                 cart.setGoods(mGoodDetail);
                 cart.setUserName(cartBean.getUserName());
                 isExits = true;
             }
-            if (!isExits) {
-                cart = new CartBean();
-                cart.setChecked(true);
-                cart.setCount(1);
-                cart.setGoods(mGoodDetail);
-                cart.setUserName(FuliCenterApplication.getInstance().getUserName());
-            }
+
+        }
+        if (!isExits) {
+            cart.setGoodsId(mGoodId);
+            cart.setChecked(true);
+            cart.setCount(1);
+            cart.setGoods(mGoodDetail);
+            cart.setUserName(FuliCenterApplication.getInstance().getUserName());
         }
         new UpdateCartTask(mContext,cart).execute();
     }
-
     private void updateCollectStatus() {
         if (isCollect) {
             ivCollect.setImageResource(R.drawable.bg_collect_out);
@@ -298,6 +319,7 @@ public class GoodDetailActivity extends BaseActivity {
             ivCollect.setImageResource(R.drawable.bg_collect_in);
         }
     }
+
     private void showShare() {
         ShareSDK.initSDK(this);
         OnekeyShare oks = new OnekeyShare();
@@ -325,5 +347,26 @@ public class GoodDetailActivity extends BaseActivity {
 
         // 启动分享GUI
         oks.show(this);
+    }
+
+    class updateCartNumReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            updateCartNum();
+        }
+    }
+
+    private void setUpdateCartCountListener(){
+        mReceiver = new updateCartNumReceiver();
+        IntentFilter filter = new IntentFilter("update_cart_list");
+        registerReceiver(mReceiver, filter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mReceiver != null) {
+            unregisterReceiver(mReceiver);
+        }
     }
 }

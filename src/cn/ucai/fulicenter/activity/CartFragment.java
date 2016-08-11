@@ -49,8 +49,8 @@ public class CartFragment extends Fragment{
         View layout = View.inflate(mContext, R.layout.fragment_cart, null);
         mCartList = new ArrayList<CartBean>();
         initView(layout);
-        setListener();
         initData();
+        setListener();
         return layout;
     }
 
@@ -183,16 +183,16 @@ public class CartFragment extends Fragment{
                     rankPrice += convertPrice(good.getRankPrice());
                 }
             }
-            tvSumPrice.setText("合計: ¥"+sumPrice);
-            tvSavaPrice.setText("節省: ¥"+(sumPrice-rankPrice));
+            tvSumPrice.setText("合計: ￥"+sumPrice);
+            tvSavaPrice.setText("節省: ￥"+(sumPrice-rankPrice));
         } else {
-            tvSumPrice.setText("合計: ¥00.00");
-            tvSavaPrice.setText("節省: ¥00.00");
+            tvSumPrice.setText("合計: ￥00.00");
+            tvSavaPrice.setText("節省: ￥00.00");
         }
     }
 
     private int convertPrice(String price) {
-        price = price.substring(price.indexOf("¥") + 1);
+        price = price.substring(price.indexOf("￥") + 1);
         return Integer.valueOf(price);
     }
 }

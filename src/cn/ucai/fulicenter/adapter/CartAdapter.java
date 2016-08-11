@@ -54,22 +54,22 @@ public class CartAdapter extends RecyclerView.Adapter<ViewHolder>{
         if (holder instanceof CartViewHolder) {
             mCartViewHolder = (CartViewHolder) holder;
             final CartBean cart = mCartList.get(position);
-            mCartViewHolder.cbCart.setChecked(cart.isChecked());
+            mCartViewHolder.cbCartSelected.setChecked(cart.isChecked());
             if (cart.getGoods() != null) {
-                ImageUtils.setGoodImage(mContext, mCartViewHolder.ivImageCartThumb, cart.getGoods().getGoodsThumb());
-                mCartViewHolder.tvCartName.setText(cart.getGoods().getGoodsName());
-                mCartViewHolder.tvCartNum.setText("("+cart.getCount()+")");
-                mCartViewHolder.tvCartJag.setText(cart.getGoods().getCurrencyPrice());
+                ImageUtils.setGoodImage(mContext, mCartViewHolder.ivCartThumb, cart.getGoods().getGoodsThumb());
+                mCartViewHolder.tvCartGoodName.setText(cart.getGoods().getGoodsName());
+                mCartViewHolder.tvCartCount.setText("("+cart.getCount()+")");
+                mCartViewHolder.tvCartPrice.setText(cart.getGoods().getCurrencyPrice());
             }
-            mCartViewHolder.cbCart.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            mCartViewHolder.cbCartSelected.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     cart.setChecked(isChecked);
                     new UpdateCartTask(mContext,cart).execute();
                 }
             });
-            mCartViewHolder.ivImageCartAdd.setOnClickListener(new ChangeCountListener(cart,1));
-            mCartViewHolder.ivImageCartDel.setOnClickListener(new ChangeCountListener(cart,-1));
+            mCartViewHolder.ivCartAdd.setOnClickListener(new ChangeCountListener(cart,1));
+            mCartViewHolder.ivCartDel.setOnClickListener(new ChangeCountListener(cart,-1));
         }
     }
 
@@ -92,24 +92,22 @@ public class CartAdapter extends RecyclerView.Adapter<ViewHolder>{
     }
 
     class CartViewHolder extends ViewHolder {
-        RelativeLayout layout;
-        CheckBox cbCart;
-        ImageView ivImageCartThumb;
-        TextView tvCartName;
-        ImageView ivImageCartAdd;
-        ImageView ivImageCartDel;
-        TextView tvCartNum;
-        TextView tvCartJag;
+        CheckBox cbCartSelected;
+        ImageView ivCartThumb;
+        TextView tvCartGoodName;
+        ImageView ivCartAdd;
+        ImageView ivCartDel;
+        TextView tvCartCount;
+        TextView tvCartPrice;
         public CartViewHolder(View itemView) {
             super(itemView);
-            /*layout = (RelativeLayout) itemView.findViewById(R.id.layout_cart_Lin);*/
-            cbCart = (CheckBox) itemView.findViewById(R.id.item_cart_cb);
-            ivImageCartThumb = (ImageView) itemView.findViewById(R.id.image_cart_thumb);
-            tvCartName = (TextView) itemView.findViewById(R.id.text_cart_name);
-            ivImageCartAdd = (ImageView) itemView.findViewById(R.id.image_cart_add);
-            ivImageCartDel = (ImageView) itemView.findViewById(R.id.image_cart_del);
-            tvCartNum = (TextView) itemView.findViewById(R.id.text_cart_num);
-            tvCartJag = (TextView) itemView.findViewById(R.id.text_cart_jag);
+            cbCartSelected = (CheckBox) itemView.findViewById(R.id.cb_cart_selected);
+            ivCartThumb = (ImageView) itemView.findViewById(R.id.iv_cart_thumb);
+            tvCartGoodName = (TextView) itemView.findViewById(R.id.tv_cart_good_name);
+            ivCartAdd = (ImageView) itemView.findViewById(R.id.iv_cart_add);
+            tvCartCount = (TextView) itemView.findViewById(R.id.tv_cart_count);
+            ivCartDel = (ImageView) itemView.findViewById(R.id.iv_cart_del);
+            tvCartPrice = (TextView) itemView.findViewById(R.id.tv_cart_price);
         }
     }
 
